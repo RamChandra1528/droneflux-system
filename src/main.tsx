@@ -6,7 +6,7 @@ import App from './App.tsx'
 import './index.css'
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider defaultTheme="system" storageKey="drone-flux-theme">
+  <ThemeProvider defaultTheme="system" attribute="class" storageKey="drone-flux-theme">
     <AuthProvider>
       <App />
     </AuthProvider>

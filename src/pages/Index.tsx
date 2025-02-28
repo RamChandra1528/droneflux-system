@@ -11,6 +11,8 @@ import {
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+// import Particles from '../Background/Particles';
+
 
 export default function Index() {
   const navigate = useNavigate();
@@ -128,7 +130,7 @@ export default function Index() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-600/20 dark:from-gray-900/90 dark:to-gray-900/70 z-10"></div>
           <img 
-            src="https://images.unsplash.com/photo-1579829366248-204fe8413f31?q=80&w=2070"
+            src="https://cdn.builtin.com/cdn-cgi/image/f=auto,fit=cover,w=1200,h=635,q=80/https://builtin.com/sites/www.builtin.com/files/2022-09/delivery-horizon-drone-delivery.png"
             alt="Drone delivery background" 
             className="w-full h-full object-cover z-0"
           />
@@ -189,9 +191,9 @@ export default function Index() {
               transition={{ delay: 0.3, duration: 0.6 }}
               className="relative"
             >
-              <div className="relative mx-auto w-full max-w-lg aspect-video rounded-xl glass-panel overflow-hidden shadow-2xl">
+              {/* <div className="relative mx-auto w-full max-w-lg aspect-video rounded-xl glass-panel overflow-hidden shadow-2xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1607344645866-009c320c5ab8?q=80&w=2070" 
+                  src="/public/DALL·E 2025-02-28 22.31.31 - A sleek, futuristic drone delivery management dashboard. The interface shows real-time monitoring and analytics with interactive graphs, live maps wit.webp" 
                   alt="Dashboard preview" 
                   className="w-full h-full object-cover rounded-xl"
                 />
@@ -201,7 +203,7 @@ export default function Index() {
                     <p className="text-sm text-gray-200">Real-time monitoring and analytics</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
               
               <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-primary/20 backdrop-blur-xl border border-primary/30 animate-pulse-subtle"></div>
               <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-blue-500/10 backdrop-blur-xl border border-blue-500/20 animate-pulse-subtle"></div>

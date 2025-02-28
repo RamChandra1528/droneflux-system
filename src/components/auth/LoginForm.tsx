@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { mockLogin } from "@/lib/data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Drone } from "lucide-react";
+import { Plane } from "lucide-react";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -85,7 +85,7 @@ export function LoginForm() {
       <div className="w-full max-w-md px-4 py-8">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-4">
-            <Drone className="h-8 w-8 text-primary" />
+            <Plane className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
             DroneFlux System

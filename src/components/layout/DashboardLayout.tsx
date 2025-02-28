@@ -3,10 +3,10 @@ import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MainNav } from "./MainNav";
 import { UserNav } from "./UserNav";
-import { Toaster } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu, X, Bell } from "lucide-react";
+import { Menu, X, Bell, Plane } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +47,7 @@ export function DashboardLayout({
               </Button>
             )}
             <div className="flex items-center gap-2">
-              <Drone className="h-6 w-6 text-primary" />
+              <Plane className="h-6 w-6 text-primary" />
               <div className="hidden sm:block text-lg font-semibold tracking-tight">
                 DroneFlux
               </div>
@@ -111,7 +111,7 @@ export function DashboardLayout({
           >
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-2">
-                <Drone className="h-6 w-6 text-primary" />
+                <Plane className="h-6 w-6 text-primary" />
                 <div className="text-lg font-semibold tracking-tight">
                   DroneFlux
                 </div>
@@ -140,6 +140,3 @@ export function DashboardLayout({
     </div>
   );
 }
-
-// Import Drone icon to fix error
-import { Drone } from "lucide-react";

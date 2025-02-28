@@ -6,7 +6,7 @@ import { DeliverySummary } from "@/components/dashboard/DeliverySummary";
 import { OrderStats } from "@/components/dashboard/OrderStats";
 import { Map } from "@/components/dashboard/Map";
 import { droneStats, orderStats, deliveryPerformance, mockDrones, mockOrders } from "@/lib/data";
-import { Package, Drone, Clock, TrendingUp, Truck, BarChart, CheckCircle, AlertCircle } from "lucide-react";
+import { Package, Plane, Clock, TrendingUp, BarChart, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function Dashboard() {
   // Get a subset of drones and orders for the dashboard
@@ -37,7 +37,7 @@ export default function Dashboard() {
           <StatusCard
             title="Active Drones"
             value={`${droneStats.available + droneStats.inTransit}/${droneStats.total}`}
-            icon={Drone}
+            icon={Plane}
             iconColor="bg-green-500"
             tooltipText="Available and in-transit drones"
           />

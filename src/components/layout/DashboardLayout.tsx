@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Menu, X, Bell, Plane } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,15 +18,12 @@ import {
 
 interface DashboardLayoutProps {
   children: ReactNode;
-  userRole?: "admin" | "customer" | "operator" | "staff";
 }
 
-export function DashboardLayout({ 
-  children, 
-  userRole = "admin" 
-}: DashboardLayoutProps) {
+export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { user } = useAuth();
   
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -55,7 +53,7 @@ export function DashboardLayout({
             </div>
           </div>
           
-          {!isMobile && <MainNav userRole={userRole} />}
+          {!isMobile && <MainNav userRole={user?.role || "admin"} />}
           
           <div className="flex items-center gap-4">
             <ThemeToggle />
@@ -92,7 +90,7 @@ export function DashboardLayout({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <UserNav />
+            <UserNav user={user || undefined} />
           </div>
         </div>
       </header>
@@ -127,7 +125,7 @@ export function DashboardLayout({
                 <span className="sr-only">Close menu</span>
               </Button>
             </div>
-            <MainNav userRole={userRole} />
+            <MainNav userRole={user?.role || "admin"} />
           </div>
         </div>
       )}

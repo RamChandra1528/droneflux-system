@@ -1,11 +1,14 @@
 
 import { createRoot } from 'react-dom/client'
 import { ThemeProvider } from "./providers/theme-provider";
+import { AuthProvider } from "./contexts/AuthContext";
 import App from './App.tsx'
 import './index.css'
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider defaultTheme="system" storageKey="drone-flux-theme">
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </ThemeProvider>
 );

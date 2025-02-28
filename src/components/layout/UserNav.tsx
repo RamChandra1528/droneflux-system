@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, UserCog, HelpCircle, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface UserNavProps {
   user?: {
@@ -28,6 +29,7 @@ export function UserNav({ user = {
   role: "admin"
 } }: UserNavProps) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   // Get initials from name
   const initials = user.name
@@ -42,6 +44,11 @@ export function UserNav({ user = {
     operator: "Drone Operator",
     staff: "Delivery Staff"
   }[user.role] || "User";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   
   return (
     <DropdownMenu>
@@ -87,7 +94,7 @@ export function UserNav({ user = {
           <span>Documentation</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate("/login")}>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

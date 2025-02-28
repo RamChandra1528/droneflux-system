@@ -13,9 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { mockLogin } from "@/lib/data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plane } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -23,14 +23,14 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // In a real app, you would use your authentication provider here
-      const user = await mockLogin(email, password);
+      const user = await login(email, password);
 
       if (user) {
         toast({

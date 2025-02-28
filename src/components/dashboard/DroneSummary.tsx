@@ -9,9 +9,10 @@ import { Drone } from "@/lib/data";
 interface DroneSummaryProps {
   drone: Drone;
   className?: string;
+  onClick?: () => void;
 }
 
-export function DroneSummary({ drone, className }: DroneSummaryProps) {
+export function DroneSummary({ drone, className, onClick }: DroneSummaryProps) {
   // Determine battery icon based on level
   const BatteryIcon = 
     drone.batteryLevel > 70 ? Battery :
@@ -41,7 +42,7 @@ export function DroneSummary({ drone, className }: DroneSummaryProps) {
   const StatusIcon = statusConfig[drone.status]?.icon || AlertCircle;
   
   return (
-    <Card className={cn("overflow-hidden hover-effect", className)}>
+    <Card className={cn("overflow-hidden hover-effect", className)} onClick={onClick}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-semibold">{drone.name}</CardTitle>

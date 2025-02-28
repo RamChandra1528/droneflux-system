@@ -1,6 +1,5 @@
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,7 +8,6 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
 
   // While auth state is loading, show nothing
   if (isLoading) {

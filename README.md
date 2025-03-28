@@ -108,5 +108,3 @@ For support, feature requests, or collaboration:
 - GitHub Issues: [Your Repository Issues Page]
 
 ---
-
-**Built with ❤️ using Lovable AI**

@@ -1,3 +1,4 @@
+
 /* eslint-disable react-refresh/only-export-components */
 
 import React, { createContext, useState, useContext, useEffect } from "react";
@@ -8,6 +9,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User | null>;
   logout: () => void;
+  signup: (name: string, email: string, password: string) => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,13 +47,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signup = async (name: string, email: string, password: string) => {
+    try {
+      // In a real app, this would create a new user via an API
+      // For now, we'll simulate a successful signup by returning a mock user
+      const mockUser: User = {
+        id: Date.now().toString(),
+        name,
+        email,
+        role: "staff",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + email,
+      };
+      
+      setUser(mockUser);
+      localStorage.setItem('droneflux-user', JSON.stringify(mockUser));
+      return mockUser;
+    } catch (error) {
+      console.error("Signup error:", error);
+      return null;
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('droneflux-user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );

@@ -12,47 +12,29 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plane } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
       const user = await login(email, password);
-
       if (user) {
-        toast({
-          title: "Login successful",
-          description: `Welcome back, ${user.name}!`,
-        });
         navigate("/dashboard");
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Please check your credentials and try again.",
-          variant: "destructive",
-        });
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
   
@@ -136,8 +118,8 @@ export function LoginForm() {
                     autoComplete="current-password"
                   />
                 </div>
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign in"}
+                <Button type="submit" disabled={isSubmitting || isLoading}>
+                  {isSubmitting || isLoading ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
             </form>
@@ -225,12 +207,12 @@ export function LoginForm() {
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-center text-sm text-muted-foreground">
               <span>Don&apos;t have an account? </span>
-              <a
-                href="#"
+              <Link
+                to="/signup"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Sign up
-              </a>
+              </Link>
             </div>
           </CardFooter>
         </Card>

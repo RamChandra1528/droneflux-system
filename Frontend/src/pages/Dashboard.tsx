@@ -331,7 +331,8 @@ export default function Dashboard() {
         <div className="flex flex-col gap-2">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
-            {welcomeMessages[user?.role || "admin"]}
+             {welcomeMessages[user?.role || "admin"]} 
+            
           </p>
         </div>
         

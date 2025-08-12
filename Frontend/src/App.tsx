@@ -35,6 +35,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/success" element={<GoogleAuthHandler />} />
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -49,7 +50,6 @@ const App = () => (
           <Route path="/deliveries" element={<ProtectedRoute roles={["staff"]}><Deliveries /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><HelpCenter /></ProtectedRoute>} />
           <Route path="/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
-          <Route path="/auth/success" element={<GoogleAuthHandler />} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />

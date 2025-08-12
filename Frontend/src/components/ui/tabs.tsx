@@ -51,3 +51,8 @@ const TabsContent = React.forwardRef<
 TabsContent.displayName = TabsPrimitive.Content.displayName
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }
+
+// Usage example (remove or comment out in actual code!)
+// <Tabs value={userType} onValueChange={setUserType} className="w-full">
+//   {/* ...TabsList and TabsTrigger... */}
+// </Tabs>

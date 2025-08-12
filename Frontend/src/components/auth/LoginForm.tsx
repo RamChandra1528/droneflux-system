@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plane } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
@@ -23,6 +23,7 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { login, isLoading, googleLogin } = useAuth();
+  const [userType, setUserType] = useState("customer");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +31,7 @@ export function LoginForm() {
     setError(null);
 
     try {
-      const user = await login(email, password);
+      const user = await login(email, password, userType); // pass userType
       if (user) {
         navigate("/dashboard");
       } else {
@@ -38,30 +39,6 @@ export function LoginForm() {
       }
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  // Preset user credentials for demo
-  const setDemoCredentials = (role: string) => {
-    switch (role) {
-      case "admin":
-        setEmail("admin@droneflux.com");
-        setPassword("password123");
-        break;
-      case "customer":
-        setEmail("john@example.com");
-        setPassword("password123");
-        break;
-      case "operator":
-        setEmail("mike@droneflux.com");
-        setPassword("password123");
-        break;
-      case "staff":
-        setEmail("sarah@droneflux.com");
-        setPassword("password123");
-        break;
-      default:
-        break;
     }
   };
 
@@ -139,85 +116,25 @@ export function LoginForm() {
                 </Button>
               </div>
             </form>
-            
+             
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="bg-background px-2 text-muted-foreground">
-                  Demo accounts
+                  Select account Type
                 </span>
               </div>
             </div>
             
-            <Tabs defaultValue="admin" className="w-full">
-              <TabsList className="grid grid-cols-4 w-full">
+            <Tabs value={userType} onValueChange={setUserType} className="w-full">
+              <TabsList className="grid grid-cols-2 w-full">
                 <TabsTrigger value="admin">Admin</TabsTrigger>
                 <TabsTrigger value="customer">Customer</TabsTrigger>
-                <TabsTrigger value="operator">Operator</TabsTrigger>
-                <TabsTrigger value="staff">Staff</TabsTrigger>
+                {/* <TabsTrigger value="operator">Operator</TabsTrigger>
+                <TabsTrigger value="staff">Staff</TabsTrigger> */}
               </TabsList>
-              <TabsContent value="admin">
-                <div className="text-xs p-3 bg-muted/50 rounded-md mt-2">
-                  <p className="font-medium mb-1">Admin Account</p>
-                  <p className="text-muted-foreground mb-1">Email: admin@droneflux.com</p>
-                  <p className="text-muted-foreground">Password: password123</p>
-                  <Button 
-                    variant="link" 
-                    size="sm" 
-                    className="px-0 h-auto text-xs mt-1"
-                    onClick={() => setDemoCredentials("admin")}
-                  >
-                    Use these credentials
-                  </Button>
-                </div>
-              </TabsContent>
-              <TabsContent value="customer">
-                <div className="text-xs p-3 bg-muted/50 rounded-md mt-2">
-                  <p className="font-medium mb-1">Customer Account</p>
-                  <p className="text-muted-foreground mb-1">Email: john@example.com</p>
-                  <p className="text-muted-foreground">Password: password123</p>
-                  <Button 
-                    variant="link" 
-                    size="sm" 
-                    className="px-0 h-auto text-xs mt-1"
-                    onClick={() => setDemoCredentials("customer")}
-                  >
-                    Use these credentials
-                  </Button>
-                </div>
-              </TabsContent>
-              <TabsContent value="operator">
-                <div className="text-xs p-3 bg-muted/50 rounded-md mt-2">
-                  <p className="font-medium mb-1">Operator Account</p>
-                  <p className="text-muted-foreground mb-1">Email: mike@droneflux.com</p>
-                  <p className="text-muted-foreground">Password: password123</p>
-                  <Button 
-                    variant="link" 
-                    size="sm" 
-                    className="px-0 h-auto text-xs mt-1"
-                    onClick={() => setDemoCredentials("operator")}
-                  >
-                    Use these credentials
-                  </Button>
-                </div>
-              </TabsContent>
-              <TabsContent value="staff">
-                <div className="text-xs p-3 bg-muted/50 rounded-md mt-2">
-                  <p className="font-medium mb-1">Staff Account</p>
-                  <p className="text-muted-foreground mb-1">Email: sarah@droneflux.com</p>
-                  <p className="text-muted-foreground">Password: password123</p>
-                  <Button 
-                    variant="link" 
-                    size="sm" 
-                    className="px-0 h-auto text-xs mt-1"
-                    onClick={() => setDemoCredentials("staff")}
-                  >
-                    Use these credentials
-                  </Button>
-                </div>
-              </TabsContent>
             </Tabs>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<User | null>;
+  login: (email: string, password: string, userType: string) => Promise<User | null>;
   logout: () => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<User | null>;
   googleLogin: () => void;
@@ -36,13 +36,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, userType: string) => {
     try {
       setIsLoading(true);
       const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, userType }), // send userType
       });
       const data = await res.json();
       if (res.ok && data.user) {
@@ -75,13 +75,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signup = async (name: string, email: string, password: string) => {
+  const signup = async (name: string, email: string, password: string, userType: string) => {
     try {
       setIsLoading(true);
       const res = await fetch(`${API_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, userType }), // send userType
       });
       const data = await res.json();
       if (res.ok && data.user) {

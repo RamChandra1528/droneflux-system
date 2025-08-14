@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +20,7 @@ import Deliveries from "./pages/Deliveries";
 import HelpCenter from "./pages/HelpCenter";
 import Documentation from "./pages/Documentation";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { GoogleAuthHandler } from "@/components/auth/GoogleAuthHandler";
 
 // Create the QueryClient
 const queryClient = new QueryClient();
@@ -35,6 +35,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/success" element={<GoogleAuthHandler />} />
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

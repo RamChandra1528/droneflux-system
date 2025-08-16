@@ -1,20 +1,26 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LocateFixed } from "lucide-react";
+import { MapPin } from "lucide-react"; // <-- Use MapPin
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
+import { createRoot } from "react-dom/client";
 
-// Use ?url to ensure Vite returns the correct URL for the images
-import markerIcon2xUrl from "leaflet/dist/images/marker-icon-2x.png?url";
-import markerIconUrl from "leaflet/dist/images/marker-icon.png?url";
-import markerShadowUrl from "leaflet/dist/images/marker-shadow.png?url";
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2xUrl,
-  iconUrl: markerIconUrl,
-  shadowUrl: markerShadowUrl,
-});
+// Custom React marker icon using Lucide
+function createReactDivIcon() {
+  const div = document.createElement("div");
+  // Render the Lucide icon into the div
+  createRoot(div).render(
+    <MapPin style={{ color: "red", width: 32, height: 32 }} /> // <-- Red color
+  );
+  return L.divIcon({
+    html: div,
+    className: "",
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  });
+}
 
 interface MapProps {
   className?: string;
@@ -23,13 +29,16 @@ interface MapProps {
 }
 
 export function Map({ className, center = [28.6139, 77.2090], zoom = 12 }: MapProps) {
+  // Only create the icon once (avoid SSR issues)
+  const customIcon = typeof window !== "undefined" ? createReactDivIcon() : undefined;
+
   return (
     <Card className={className} >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle>Delivery Map</CardTitle>
           <Badge variant="outline" className="bg-primary/10 text-primary">
-            <LocateFixed className="h-3.5 w-3.5 mr-1" />
+            <MapPin className="h-3.5 w-3.5 mr-1" />
             Live
           </Badge>
         </div>
@@ -46,11 +55,13 @@ export function Map({ className, center = [28.6139, 77.2090], zoom = 12 }: MapPr
               attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={center}>
-              <Popup>
-                Device/Drone location (demo)
-              </Popup>
-            </Marker>
+            {customIcon && (
+              <Marker position={center} icon={customIcon}>
+                <Popup>
+                  Device/Drone location (demo)
+                </Popup>
+              </Marker>
+            )}
           </MapContainer>
         </div>
       </CardContent>

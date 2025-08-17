@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const API_URL = "http://localhost:5000/api/auth";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"; // Fallback to local URL if not set
   
   useEffect(() => {
     // Check for stored user data on component mount

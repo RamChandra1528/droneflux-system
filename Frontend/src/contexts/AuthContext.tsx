@@ -9,7 +9,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string, userType: string) => Promise<User | null>;
   logout: () => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<User | null>;
+  signup: (name: string, email: string, password: string, userType: string) => Promise<User | null>;
   googleLogin: () => void;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }

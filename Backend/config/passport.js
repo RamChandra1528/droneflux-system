@@ -23,15 +23,32 @@ passport.use(new GoogleStrategy({
   callbackURL: 'https://droneflux-system-dbd9.vercel.app/api/auth/google/callback',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
+    // Check if user exists with Google ID
     let user = await User.findOne({ googleId: profile.id });
-    if (!user) {
-      user = await User.create({
-        googleId: profile.id,
-        email: profile.emails[0].value,
-        name: profile.displayName,
-      });
+
+    if (user) {
+      return done(null, user); // User found, return them
     }
+
+    // If not, check if user exists with the email from Google
+    user = await User.findOne({ email: profile.emails[0].value });
+
+    if (user) {
+      // User exists with email, but not linked to Google. Link them.
+      user.googleId = profile.id;
+      user.name = user.name || profile.displayName; // Update name if it was empty
+      await user.save();
+      return done(null, user);
+    }
+
+    // No user found with googleId or email, create a new user.
+    user = await User.create({
+      googleId: profile.id,
+      email: profile.emails[0].value,
+      name: profile.displayName,
+    });
     return done(null, user);
+
   } catch (err) {
     return done(err);
   }

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+  orderId: { type: String, unique: true }, // Unique order ID for display
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   customerName: { type: String, required: true },
   status: {
@@ -59,7 +60,7 @@ orderSchema.pre('save', function(next) {
 
 // Generate unique order ID for display purposes
 orderSchema.pre('save', async function(next) {
-  if (!this._id) {
+  if (this.isNew && !this.orderId) {
     const count = await mongoose.model('Order').countDocuments();
     this.orderId = `ORD${String(count + 1).padStart(6, '0')}`;
   }

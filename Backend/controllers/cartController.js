@@ -354,3 +354,107 @@ exports.validateCart = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Proceed to checkout
+exports.proceedToCheckout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { shippingAddress, paymentMethod, notes } = req.body;
+    
+    // Get user's cart
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
+    
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Cart is empty' 
+      });
+    }
+    
+    // Validate cart items and stock
+    for (const item of cart.items) {
+      const product = await Product.findById(item.product._id);
+      if (!product) {
+        return res.status(400).json({ 
+          success: false, 
+          error: `Product ${item.product.name} no longer exists` 
+        });
+      }
+      
+      if (product.stock.quantity < item.quantity) {
+        return res.status(400).json({ 
+          success: false, 
+          error: `Insufficient stock for ${product.name}` 
+        });
+      }
+    }
+    
+    // Calculate total price manually
+    const subtotal = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    
+    // Create order from cart
+    const Order = require('../models/Order');
+    
+    const orderData = {
+      customerId: userId,
+      customerName: req.user.name || 'Customer',
+      status: 'pending',
+      items: cart.items.map(item => ({
+        name: item.product.name,
+        quantity: item.quantity,
+        weight: item.product.weight || 1 // Default weight if not specified
+      })),
+      totalWeight: cart.items.reduce((total, item) => total + ((item.product.weight || 1) * item.quantity), 0),
+      price: subtotal,
+      paymentStatus: 'pending',
+      paymentMethod: paymentMethod || 'card',
+      pickupLocation: {
+        address: 'Warehouse - 123 Main St, City, State 12345',
+        lat: 40.7128,
+        lng: -74.0060
+      },
+      deliveryLocation: {
+        address: shippingAddress?.address || 'Customer Address',
+        lat: shippingAddress?.coordinates?.latitude || 40.7589,
+        lng: shippingAddress?.coordinates?.longitude || -73.9851
+      },
+      estimatedDelivery: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+    };
+    
+    console.log('Creating order with data:', JSON.stringify(orderData, null, 2));
+    
+    const order = new Order(orderData);
+    console.log('Order created, attempting to save...');
+    
+    const savedOrder = await order.save();
+    console.log('Order saved successfully:', savedOrder._id);
+    
+    // Update product stock
+    for (const item of cart.items) {
+      console.log(`Updating stock for product ${item.product._id}`);
+      await Product.findByIdAndUpdate(
+        item.product._id,
+        { $inc: { 'stock.quantity': -item.quantity, 'sales.totalSold': item.quantity } }
+      );
+    }
+    
+    // Clear cart after successful order creation
+    console.log('Clearing cart...');
+    cart.items = [];
+    await cart.save();
+    console.log('Cart cleared successfully');
+    
+    res.json({ 
+      success: true, 
+      data: { 
+        order: savedOrder,
+        orderId: savedOrder.orderId,
+        message: `Order placed successfully! Order ID: ${savedOrder.orderId}` 
+      }
+    });
+  } catch (error) {
+    console.error('Error in proceedToCheckout:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

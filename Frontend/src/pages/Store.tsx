@@ -243,6 +243,44 @@ export default function Store() {
     }
   };
 
+  const handleProceedToCheckout = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to proceed to checkout.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (cart.length === 0) {
+      toast({
+        title: "Empty cart",
+        description: "Add some items to your cart before checkout.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // For now, navigate to checkout page
+      // In the future, this could call cartService.proceedToCheckout()
+      window.location.href = '/checkout';
+      
+      toast({
+        title: "Redirecting to checkout",
+        description: "Taking you to the checkout page...",
+      });
+    } catch (error) {
+      console.error('Failed to proceed to checkout:', error);
+      toast({
+        title: "Error",
+        description: "Failed to proceed to checkout. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const renderStars = (rating: number) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -615,7 +653,12 @@ export default function Store() {
                         <span>Total:</span>
                         <span>${getCartTotal().toFixed(2)}</span>
                       </div>
-                      <Button className="w-full" size="lg">
+                      <Button 
+                        className="w-full" 
+                        size="lg"
+                        onClick={handleProceedToCheckout}
+                        disabled={cart.length === 0}
+                      >
                         <Truck className="h-4 w-4 mr-2" />
                         Proceed to Checkout
                       </Button>

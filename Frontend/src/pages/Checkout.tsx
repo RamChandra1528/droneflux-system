@@ -222,35 +222,21 @@ export default function Checkout() {
     setLoading(true);
     
     try {
-      // Prepare order data
-      const orderData = {
-        customerId: user.id,
-        customerName: `${shippingAddress.firstName} ${shippingAddress.lastName}`,
-        status: 'pending' as const,
-        items: cart.map(item => ({
-          name: item.product.name,
-          quantity: item.quantity,
-          weight: 0.5 // Default weight, could be fetched from product
-        })),
-        totalWeight: cart.reduce((total, item) => total + (0.5 * item.quantity), 0),
-        pickupLocation: {
-          address: "Store Warehouse, 123 Business Ave, New York, NY 10001",
-          lat: 40.712776,
-          lng: -74.005974
-        },
-        deliveryLocation: {
+      // Prepare checkout data
+      const checkoutData = {
+        shippingAddress: {
           address: `${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zipCode}`,
-          lat: 40.758896, // Default coordinates, could be geocoded from address
-          lng: -73.985130
+          coordinates: {
+            latitude: 40.758896, // Default coordinates, could be geocoded from address
+            longitude: -73.985130
+          }
         },
-        price: getTotal(),
-        paymentStatus: 'pending' as const,
         paymentMethod: paymentMethod.type,
-        estimatedDelivery: new Date(Date.now() + (shippingMethod === "express" ? 2 * 60 * 60 * 1000 : 4 * 60 * 60 * 1000)).toISOString()
+        notes: `Shipping method: ${shippingMethods.find(m => m.id === shippingMethod)?.name}. ${deliveryPreferences.specialInstructions}`
       };
 
-      // Create order through API
-      const response = await orderService.createOrder(orderData);
+      // Process checkout through cart service
+      const response = await cartService.proceedToCheckout(checkoutData);
       
       if (response.success) {
         // Clear cart after successful order
@@ -262,11 +248,11 @@ export default function Checkout() {
 
         toast({
           title: "Order placed successfully!",
-          description: `Your order #${response.data._id} has been confirmed and is being processed.`,
+          description: `Your order #${response.data.order._id} has been confirmed and is being processed.`,
         });
         
-        // Navigate to order tracking
-        navigate(`/orders/${response.data._id}`);
+        // Navigate to orders page
+        navigate('/orders');
       } else {
         throw new Error(response.error || 'Failed to create order');
       }

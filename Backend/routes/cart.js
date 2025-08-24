@@ -26,4 +26,7 @@ router.get('/summary', cartController.getCartSummary);
 router.post('/merge', cartController.mergeGuestCart);
 router.get('/validate', cartController.validateCart);
 
+// Checkout
+router.post('/checkout', cartController.proceedToCheckout);
+
 module.exports = router;

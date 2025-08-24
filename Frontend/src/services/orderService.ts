@@ -144,7 +144,7 @@ export const cartService = {
 
   // Add item to cart
   async addToCart(productId: string, quantity: number) {
-    return apiRequest('/cart/items', {
+    return apiRequest('/cart/add', {
       method: 'POST',
       body: JSON.stringify({ productId, quantity }),
     });
@@ -198,6 +198,18 @@ export const cartService = {
   // Get cart summary
   async getCartSummary() {
     return apiRequest('/cart/summary');
+  },
+
+  // Proceed to checkout
+  async proceedToCheckout(checkoutData?: {
+    shippingAddress?: any;
+    paymentMethod?: string;
+    notes?: string;
+  }) {
+    return apiRequest('/cart/checkout', {
+      method: 'POST',
+      body: JSON.stringify(checkoutData || {}),
+    });
   },
 };
 

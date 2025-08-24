@@ -5,23 +5,75 @@ import { DeliverySummary } from "@/components/dashboard/DeliverySummary";
 import { OrderStats } from "@/components/dashboard/OrderStats";
 import { Map } from "@/components/dashboard/Map";
 // import { LiveMap } from "@/components/ui/LiveMap"; // Add this import
-import { droneStats, orderStats, deliveryPerformance, mockDrones, mockOrders } from "@/lib/data";
+import { droneStats, orderStats, deliveryPerformance, mockDrones } from "@/lib/data";
 import { Package, Plane, Clock, TrendingUp, BarChart, CheckCircle, AlertCircle, ShoppingBag, Truck, Wrench } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { orderService } from "@/services/orderService";
+import { Order } from "@/lib/data";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [userOrders, setUserOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
+  // Fetch user orders from API
+  useEffect(() => {
+    const fetchUserOrders = async () => {
+      if (!user || isLoading || !localStorage.getItem('droneflux-token')) return;
+      
+      try {
+        setLoading(true);
+        let orders;
+        
+        if (user.role === 'customer') {
+          // For customers, get their specific orders
+          const response = await orderService.getCustomerOrders();
+          orders = response.data || [];
+        } else {
+          // For other roles, get all orders
+          const response = await orderService.getOrders();
+          orders = response.data || [];
+        }
+        
+        setUserOrders(orders);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+        setError('Failed to load orders. Please try again later.');
+        // Fallback to empty array
+        setUserOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserOrders();
+  }, [user, isLoading]);
+
   // Get a subset of drones and orders for the dashboard
   const displayDrones = mockDrones.slice(0, 3);
-  const displayOrders = mockOrders.filter(order => 
+  const displayOrders = userOrders.filter(order => 
     user?.role === "customer" 
       ? order.customerId === user.id 
       : order.status === "in-transit" || order.status === "processing"
   );
+
+  // Calculate order statistics for customer dashboard
+  const customerOrderStats = {
+    activeOrders: userOrders.filter(order => 
+      order.status === "pending" || order.status === "processing" || order.status === "in-transit"
+    ).length,
+    totalOrders: userOrders.length,
+    completedDeliveries: userOrders.filter(order => order.status === "delivered").length,
+    totalSpent: userOrders
+      .filter(order => order.status === "delivered")
+      .reduce((sum, order) => sum + (order.price || 0), 0)
+  };
 
   // Different welcome messages based on user role
   const welcomeMessages = {
@@ -145,55 +197,75 @@ export default function Dashboard() {
 
   const renderCustomerDashboard = () => (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatusCard
-          title="Your Active Orders"
-          value={displayOrders.length}
-          icon={Package}
-          iconColor="bg-primary"
-          tooltipText="Number of your orders in progress"
-        />
-        <StatusCard
-          title="Total Orders"
-          value={mockOrders.filter(order => order.customerId === user?.id).length}
-          icon={ShoppingBag}
-          iconColor="bg-orange-500"
-          tooltipText="Total number of orders you've placed"
-        />
-        <StatusCard
-          title="Completed Deliveries"
-          value={mockOrders.filter(order => order.customerId === user?.id && order.status === "delivered").length}
-          icon={CheckCircle}
-          iconColor="bg-green-500"
-          tooltipText="Number of completed deliveries"
-        />
-      </div>
-
-      <div className="mt-8">
-        <h3 className="text-lg font-medium mb-4">Track Your Orders</h3>
-        <Map className="h-[500px] mb-6" />
-        
-        <div className="mt-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium">Your Orders</h3>
-            <Button onClick={() => navigate("/orders")}>View All Orders</Button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {displayOrders.map(order => (
-              <DeliverySummary key={order.id} order={order} />
-            ))}
-            {displayOrders.length === 0 && (
-              <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
-                <div className="flex flex-col items-center text-muted-foreground">
-                  <Package className="h-8 w-8 mb-2" />
-                  <p>No active orders</p>
-                </div>
-              </div>
-            )}
-          </div>
+      {loading ? (
+        <div className="flex items-center justify-center h-40">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
-      </div>
+      ) : error ? (
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6">
+          <p className="text-destructive text-sm">{error}</p>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <StatusCard
+              title="Your Active Orders"
+              value={customerOrderStats.activeOrders}
+              icon={Package}
+              iconColor="bg-primary"
+              tooltipText="Number of your orders in progress"
+            />
+            <StatusCard
+              title="Total Orders"
+              value={customerOrderStats.totalOrders}
+              icon={ShoppingBag}
+              iconColor="bg-orange-500"
+              tooltipText="Total number of orders you've placed"
+            />
+            <StatusCard
+              title="Completed Deliveries"
+              value={customerOrderStats.completedDeliveries}
+              icon={CheckCircle}
+              iconColor="bg-green-500"
+              tooltipText="Number of completed deliveries"
+            />
+          </div>
+
+          <div className="mt-8">
+            <h3 className="text-lg font-medium mb-4">Track Your Orders</h3>
+            <Map className="h-[500px] mb-6" />
+            
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Your Orders</h3>
+                <Button onClick={() => navigate("/orders")}>View All Orders</Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {displayOrders.map(order => (
+                  <DeliverySummary key={order.id} order={order} />
+                ))}
+                {displayOrders.length === 0 && (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <Package className="h-8 w-8 mb-2" />
+                      <p>No active orders</p>
+                      <p className="text-sm mt-2">Start shopping to see your orders here!</p>
+                      <Button 
+                        onClick={() => navigate("/store")} 
+                        className="mt-3"
+                        variant="outline"
+                      >
+                        Go to Store
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 
@@ -325,6 +397,17 @@ export default function Dashboard() {
     }
   };
   
+  // Show loading spinner while authentication is being determined
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">

@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import DroneManagement from "./pages/DroneManagement";
 import OrderManagement from "./pages/OrderManagement";
 import Tracking from "./pages/Tracking";
+import LiveTracking from "./pages/LiveTracking";
 import UserManagement from "./pages/UserManagement";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
@@ -19,6 +20,9 @@ import Assignments from "./pages/Assignments";
 import Deliveries from "./pages/Deliveries";
 import HelpCenter from "./pages/HelpCenter";
 import Documentation from "./pages/Documentation";
+import Store from "./pages/Store";
+import Checkout from "./pages/Checkout";
+import ProductManagement from "./pages/ProductManagement";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GoogleAuthHandler } from "@/components/auth/GoogleAuthHandler";
 
@@ -39,9 +43,13 @@ const App = () => (
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
+          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          <Route path="/products" element={<ProtectedRoute roles={["admin"]}><ProductManagement /></ProtectedRoute>} />
           <Route path="/drones" element={<ProtectedRoute roles={["admin", "operator","staff"]}><DroneManagement /></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><OrderManagement /></ProtectedRoute>} />
           <Route path="/tracking" element={<ProtectedRoute><Tracking /></ProtectedRoute>} />
+          <Route path="/live-tracking" element={<ProtectedRoute roles={["admin", "operator"]}><LiveTracking /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute roles={["admin"]}><UserManagement /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute roles={["admin"]}><Analytics /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

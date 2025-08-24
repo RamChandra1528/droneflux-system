@@ -1,11 +1,11 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
-import { mockOrders, Order } from "@/lib/data";
+import { Order } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { DeliverySummary } from "@/components/dashboard/DeliverySummary";
 import { 
@@ -15,16 +15,51 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { orderService } from "@/services/orderService";
 
 export default function OrderManagement() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Fetch orders from API
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!user || isLoading || !localStorage.getItem('droneflux-token')) return;
+      
+      try {
+        setLoading(true);
+        let response;
+        
+        if (user.role === 'customer') {
+          // For customers, get their specific orders
+          response = await orderService.getCustomerOrders();
+        } else {
+          // For other roles, get all orders
+          response = await orderService.getOrders();
+        }
+        
+        setOrders(response.data || []);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+        setError('Failed to load orders. Please try again later.');
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [user, isLoading]);
   
   // Filter orders for current user if customer
   const userOrders = user?.role === "customer" 
-    ? mockOrders.filter(order => order.customerId === user.id)
-    : mockOrders;
+    ? orders.filter(order => order.customerId === user.id)
+    : orders;
   
   // Filter orders based on search and status
   const filteredOrders = userOrders.filter(order => {
@@ -114,6 +149,17 @@ export default function OrderManagement() {
       ),
     },
   ];
+
+  // Show loading spinner while authentication is being determined
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

@@ -12,7 +12,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Package, MapPin, ChevronDown, BarChart3, Settings, Users, Activity, Plane } from "lucide-react";
+import { Package, MapPin, ChevronDown, BarChart3, Settings, Users, Activity, Plane, ShoppingBag } from "lucide-react";
 
 export function MainNav({ 
   className, 
@@ -26,6 +26,7 @@ export function MainNav({
   
   const adminLinks = [
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/products", label: "Products", icon: ShoppingBag },
     { href: "/drones", label: "Drones", icon: Plane },
     { href: "/orders", label: "Orders", icon: Package },
     { href: "/tracking", label: "Tracking", icon: MapPin },

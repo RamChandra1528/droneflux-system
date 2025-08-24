@@ -1,0 +1,382 @@
+[
+    {
+      "name": "Smartphone Case - Clear",
+      "description": "Transparent protective case for smartphones with shock absorption technology.",
+      "category": "Electronics",
+      "brand": "ProtectPro",
+      "sku": "PP-SC-002",
+      "price": 19.99,
+      "comparePrice": 29.99,
+      "weight": 0.05,
+      "stock": { "quantity": 100, "lowStockThreshold": 20 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=500",
+          "alt": "Clear Smartphone Case",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["phone", "case", "protection", "clear"],
+      "status": "active"
+    },
+    {
+      "name": "Cotton T-Shirt - Blue",
+      "description": "Comfortable 100% cotton t-shirt in classic blue color. Perfect for casual wear.",
+      "category": "Clothing",
+      "brand": "ComfortWear",
+      "sku": "CW-TS-003",
+      "price": 24.99,
+      "weight": 0.2,
+      "stock": { "quantity": 75, "lowStockThreshold": 15 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500",
+          "alt": "Blue Cotton T-Shirt",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["cotton", "t-shirt", "casual", "blue"],
+      "status": "active"
+    },
+    {
+      "name": "LED Desk Lamp",
+      "description": "Adjustable LED desk lamp with touch controls and USB charging port.",
+      "category": "Home & Garden",
+      "brand": "BrightLight",
+      "sku": "BL-DL-004",
+      "price": 45.99,
+      "comparePrice": 65.99,
+      "weight": 0.8,
+      "stock": { "quantity": 30, "lowStockThreshold": 5 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500",
+          "alt": "LED Desk Lamp",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["led", "lamp", "desk", "lighting"],
+      "status": "active"
+    },
+    {
+      "name": "Fitness Tracker Watch",
+      "description": "Smart fitness tracker with heart rate monitoring, GPS, and 7-day battery life.",
+      "category": "Electronics",
+      "brand": "FitTech",
+      "sku": "FT-FW-005",
+      "price": 129.99,
+      "comparePrice": 179.99,
+      "weight": 0.1,
+      "stock": { "quantity": 25, "lowStockThreshold": 5 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=500",
+          "alt": "Fitness Tracker Watch",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["fitness", "tracker", "watch", "health"],
+      "status": "active"
+    },
+    {
+      "name": "Gaming Keyboard RGB",
+      "description": "Mechanical gaming keyboard with customizable RGB backlighting and programmable keys.",
+      "category": "Electronics",
+      "brand": "ProGamer",
+      "sku": "PG-KB-006",
+      "price": 79.99,
+      "comparePrice": 109.99,
+      "weight": 1.2,
+      "stock": { "quantity": 40, "lowStockThreshold": 8 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1587202372775-98926b1b7b12?w=500",
+          "alt": "Gaming Keyboard RGB",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["gaming", "keyboard", "rgb", "mechanical"],
+      "status": "active"
+    },
+    {
+      "name": "Running Shoes - Black",
+      "description": "Lightweight and comfortable running shoes designed for durability and performance.",
+      "category": "Footwear",
+      "brand": "RunFast",
+      "sku": "RF-SH-007",
+      "price": 59.99,
+      "comparePrice": 89.99,
+      "weight": 0.9,
+      "stock": { "quantity": 60, "lowStockThreshold": 12 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1528701800489-20be1c52a1c9?w=500",
+          "alt": "Running Shoes Black",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["running", "shoes", "sports", "black"],
+      "status": "active"
+    },
+    {
+      "name": "Backpack - Travel Edition",
+      "description": "Durable backpack with multiple compartments, water-resistant fabric, and ergonomic design.",
+      "category": "Bags",
+      "brand": "TravelPro",
+      "sku": "TP-BP-008",
+      "price": 74.99,
+      "comparePrice": 99.99,
+      "weight": 1.0,
+      "stock": { "quantity": 35, "lowStockThreshold": 7 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=500",
+          "alt": "Travel Backpack",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["travel", "backpack", "bag", "outdoor"],
+      "status": "active"
+    },
+    {
+      "name": "Ceramic Coffee Mug",
+      "description": "Minimalist ceramic mug with matte finish, perfect for hot beverages.",
+      "category": "Home & Kitchen",
+      "brand": "BrewMate",
+      "sku": "BM-MG-009",
+      "price": 12.99,
+      "comparePrice": 18.99,
+      "weight": 0.4,
+      "stock": { "quantity": 80, "lowStockThreshold": 15 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?w=500",
+          "alt": "Ceramic Coffee Mug",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["coffee", "mug", "ceramic", "kitchen"],
+      "status": "active"
+    },
+    {
+      "name": "Smart LED Bulb",
+      "description": "WiFi-enabled smart LED bulb with voice assistant support and energy saving.",
+      "category": "Electronics",
+      "brand": "SmartHome",
+      "sku": "SH-BL-010",
+      "price": 15.99,
+      "comparePrice": 25.99,
+      "weight": 0.2,
+      "stock": { "quantity": 120, "lowStockThreshold": 20 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1582719471137-c3967ffb1f01?w=500",
+          "alt": "Smart LED Bulb",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["smart", "bulb", "led", "lighting"],
+      "status": "active"
+    },
+    {
+      "name": "Leather Wallet",
+      "description": "Genuine leather wallet with multiple card slots and RFID protection.",
+      "category": "Accessories",
+      "brand": "LuxCraft",
+      "sku": "LC-WL-011",
+      "price": 39.99,
+      "comparePrice": 59.99,
+      "weight": 0.2,
+      "stock": { "quantity": 55, "lowStockThreshold": 10 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1519160558534-579f5104c1d1?w=500",
+          "alt": "Leather Wallet",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["wallet", "leather", "accessories"],
+      "status": "active"
+    },
+    {
+      "name": "Yoga Mat - Non-Slip",
+      "description": "Eco-friendly non-slip yoga mat with carrying strap.",
+      "category": "Sports & Outdoors",
+      "brand": "ZenFit",
+      "sku": "ZF-YM-012",
+      "price": 34.99,
+      "comparePrice": 49.99,
+      "weight": 1.5,
+      "stock": { "quantity": 45, "lowStockThreshold": 9 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=500",
+          "alt": "Yoga Mat",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["yoga", "mat", "fitness"],
+      "status": "active"
+    },
+    {
+      "name": "Bluetooth Portable Speaker",
+      "description": "Waterproof portable Bluetooth speaker with deep bass and 12-hour battery life.",
+      "category": "Electronics",
+      "brand": "SoundMax",
+      "sku": "SM-SP-013",
+      "price": 54.99,
+      "comparePrice": 79.99,
+      "weight": 0.7,
+      "stock": { "quantity": 65, "lowStockThreshold": 12 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?w=500",
+          "alt": "Bluetooth Portable Speaker",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["speaker", "bluetooth", "audio", "portable"],
+      "status": "active"
+    },
+    {
+      "name": "Sunglasses - Polarized",
+      "description": "Stylish polarized sunglasses with UV protection and durable frame.",
+      "category": "Accessories",
+      "brand": "SunGuard",
+      "sku": "SG-GL-014",
+      "price": 49.99,
+      "comparePrice": 79.99,
+      "weight": 0.1,
+      "stock": { "quantity": 70, "lowStockThreshold": 12 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500",
+          "alt": "Polarized Sunglasses",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["sunglasses", "polarized", "uv"],
+      "status": "active"
+    },
+    {
+      "name": "Office Chair - Ergonomic",
+      "description": "Ergonomic office chair with adjustable height, lumbar support, and breathable mesh.",
+      "category": "Furniture",
+      "brand": "WorkEase",
+      "sku": "WE-CH-015",
+      "price": 199.99,
+      "comparePrice": 249.99,
+      "weight": 12.0,
+      "stock": { "quantity": 20, "lowStockThreshold": 5 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500",
+          "alt": "Ergonomic Office Chair",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["chair", "office", "ergonomic", "furniture"],
+      "status": "active"
+    },
+    {
+      "name": "Stainless Steel Water Bottle",
+      "description": "Reusable stainless steel water bottle with double-wall insulation.",
+      "category": "Home & Kitchen",
+      "brand": "HydroMate",
+      "sku": "HM-BT-016",
+      "price": 22.99,
+      "comparePrice": 34.99,
+      "weight": 0.5,
+      "stock": { "quantity": 85, "lowStockThreshold": 15 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1526401485004-2fda9f4a9d79?w=500",
+          "alt": "Steel Water Bottle",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["water", "bottle", "stainless", "eco"],
+      "status": "active"
+    },
+    {
+      "name": "Wireless Mouse",
+      "description": "Ergonomic wireless mouse with adjustable DPI and silent clicks.",
+      "category": "Electronics",
+      "brand": "ClickPro",
+      "sku": "CP-MS-017",
+      "price": 29.99,
+      "comparePrice": 49.99,
+      "weight": 0.15,
+      "stock": { "quantity": 95, "lowStockThreshold": 20 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b1b?w=500",
+          "alt": "Wireless Mouse",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["mouse", "wireless", "computer"],
+      "status": "active"
+    },
+    {
+      "name": "Camping Tent - 2 Person",
+      "description": "Lightweight waterproof camping tent suitable for 2 people.",
+      "category": "Sports & Outdoors",
+      "brand": "CampEase",
+      "sku": "CE-TN-018",
+      "price": 149.99,
+      "comparePrice": 199.99,
+      "weight": 3.5,
+      "stock": { "quantity": 15, "lowStockThreshold": 3 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1508780709619-79562169bc64?w=500",
+          "alt": "Camping Tent",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["camping", "tent", "outdoor"],
+      "status": "active"
+    },
+    {
+      "name": "Electric Kettle - 1.5L",
+      "description": "Fast-boil electric kettle with auto shut-off and stainless steel body.",
+      "category": "Home & Kitchen",
+      "brand": "QuickBoil",
+      "sku": "QB-KT-019",
+      "price": 39.99,
+      "comparePrice": 59.99,
+      "weight": 1.2,
+      "stock": { "quantity": 50, "lowStockThreshold": 10 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1621232103496-3f75a060b863?w=500",
+          "alt": "Electric Kettle",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["kettle", "electric", "kitchen"],
+      "status": "active"
+    },
+    {
+      "name": "Noise Cancelling Earbuds",
+      "description": "Compact true wireless earbuds with active noise cancellation and long battery life.",
+      "category": "Electronics",
+      "brand": "QuietBeats",
+      "sku": "QB-EB-020",
+      "price": 99.99,
+      "comparePrice": 149.99,
+      "weight": 0.08,
+      "stock": { "quantity": 70, "lowStockThreshold": 12 },
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1585386959984-a41552231693?w=500",
+          "alt": "Noise Cancelling Earbuds",
+          "isPrimary": true
+        }
+      ],
+      "tags": ["earbuds", "noise", "wireless"],
+      "status": "active"
+    }
+  ]
+  

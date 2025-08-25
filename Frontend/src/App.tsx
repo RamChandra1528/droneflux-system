@@ -23,8 +23,10 @@ import Documentation from "./pages/Documentation";
 import Store from "./pages/Store";
 import Checkout from "./pages/Checkout";
 import ProductManagement from "./pages/ProductManagement";
+import EmergencyManagement from "./components/dashboard/EmergencyManagement";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GoogleAuthHandler } from "@/components/auth/GoogleAuthHandler";
+import { SocketProvider } from "@/contexts/SocketContext";
 
 // Create the QueryClient
 const queryClient = new QueryClient();
@@ -32,9 +34,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+      <SocketProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
@@ -56,13 +59,15 @@ const App = () => (
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/assignments" element={<ProtectedRoute roles={["operator"]}><Assignments /></ProtectedRoute>} />
           <Route path="/deliveries" element={<ProtectedRoute roles={["staff"]}><Deliveries /></ProtectedRoute>} />
+          <Route path="/emergency" element={<ProtectedRoute><EmergencyManagement /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><HelpCenter /></ProtectedRoute>} />
           <Route path="/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </SocketProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

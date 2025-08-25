@@ -9,6 +9,23 @@ const orderSchema = new mongoose.Schema({
     enum: ['pending', 'processing', 'in-transit', 'delivered', 'cancelled'],
     default: 'pending'
   },
+  priority: {
+    type: String,
+    enum: ['normal', 'high', 'emergency'],
+    default: 'normal'
+  },
+  isEmergency: { type: Boolean, default: false },
+  emergencyDetails: {
+    reason: String,
+    requestedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    approvedAt: Date,
+    emergencyContact: {
+      name: String,
+      phone: String,
+      relationship: String
+    }
+  },
   createdAt: { type: Date, default: Date.now },
   estimatedDelivery: { type: Date, required: true },
   actualDeliveryTime: Date,
@@ -50,6 +67,36 @@ const orderSchema = new mongoose.Schema({
     },
     notes: String
   }],
+  routeOptimization: {
+    originalRoute: [{
+      lat: Number,
+      lng: Number,
+      timestamp: Date
+    }],
+    optimizedRoute: [{
+      lat: Number,
+      lng: Number,
+      estimatedTime: Date,
+      waypoint: String
+    }],
+    alternativeRoutes: [{
+      routeId: String,
+      distance: Number,
+      estimatedTime: Number,
+      safetyScore: Number
+    }]
+  },
+  emergencyTracking: {
+    isLiveTracking: { type: Boolean, default: false },
+    trackingStarted: Date,
+    lastLocationUpdate: Date,
+    emergencyContacts: [{
+      name: String,
+      phone: String,
+      notified: { type: Boolean, default: false },
+      notifiedAt: Date
+    }]
+  },
   updatedAt: { type: Date, default: Date.now }
 });
 

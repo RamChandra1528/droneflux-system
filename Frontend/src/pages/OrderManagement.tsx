@@ -56,15 +56,12 @@ export default function OrderManagement() {
     fetchOrders();
   }, [user, isLoading]);
   
-  // Filter orders for current user if customer
-  const userOrders = user?.role === "customer" 
-    ? orders.filter(order => order.customerId === user.id)
-    : orders;
-  
   // Filter orders based on search and status
-  const filteredOrders = userOrders.filter(order => {
-    const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredOrders = orders.filter(order => {
+    const orderId = order._id || order.id || order.orderId || '';
+    const customerName = order.customerName || '';
+    const matchesSearch = orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         customerName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus ? order.status === filterStatus : true;
     return matchesSearch && matchesStatus;
   });
@@ -72,9 +69,12 @@ export default function OrderManagement() {
   // Define columns for the data table
   const columns: ColumnDef<Order>[] = [
     {
-      accessorKey: "id",
+      accessorKey: "orderId",
       header: "Order ID",
-      cell: ({ row }) => <div className="font-medium">#{row.getValue("id")}</div>,
+      cell: ({ row }) => {
+        const orderId = row.original.orderId || row.original._id || row.original.id;
+        return <div className="font-medium">#{orderId}</div>;
+      },
     },
     {
       accessorKey: "customerName",
@@ -229,15 +229,31 @@ export default function OrderManagement() {
           <TabsContent value="grid" className="pt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredOrders.map(order => (
-                <DeliverySummary key={order.id} order={order} />
+                <DeliverySummary key={order._id || order.id} order={order} />
               ))}
               {filteredOrders.length === 0 && (
-                <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
-                  <div className="flex flex-col items-center text-muted-foreground">
-                    <Package className="h-8 w-8 mb-2" />
-                    <p>No orders found</p>
+                loading ? (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
+                      <p>Loading orders...</p>
+                    </div>
                   </div>
-                </div>
+                ) : error ? (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <AlertTriangle className="h-8 w-8 mb-2 text-red-500" />
+                      <p className="text-red-600">{error}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <Package className="h-8 w-8 mb-2" />
+                      <p>No orders found</p>
+                    </div>
+                  </div>
+                )
               )}
             </div>
           </TabsContent>

@@ -8,15 +8,23 @@ exports.getOrders = async (req, res) => {
   try {
     const { page = 1, limit = 20, status, customerId, search } = req.query;
     
+    console.log('Getting orders with params:', { page, limit, status, customerId, search });
+    console.log('User role:', req.user.role);
+    
     let query = {};
+    
+    // If user is a customer, only show their orders
+    if (req.user.role === 'customer') {
+      query.customerId = req.user.id || req.user._id;
+    }
     
     // Filter by status
     if (status) {
       query.status = status;
     }
     
-    // Filter by customer
-    if (customerId) {
+    // Filter by customer (for admin/staff)
+    if (customerId && req.user.role !== 'customer') {
       query.customerId = customerId;
     }
     
@@ -24,16 +32,20 @@ exports.getOrders = async (req, res) => {
     if (search) {
       query.$or = [
         { customerName: { $regex: search, $options: 'i' } },
+        { orderId: { $regex: search, $options: 'i' } },
         { 'pickupLocation.address': { $regex: search, $options: 'i' } },
         { 'deliveryLocation.address': { $regex: search, $options: 'i' } }
       ];
     }
+    
+    console.log('Final query:', query);
     
     // Calculate skip value for pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     // Get total count for pagination
     const totalDocs = await Order.countDocuments(query);
+    console.log('Total orders found:', totalDocs);
     
     // Get orders with pagination
     const orders = await Order.find(query)
@@ -43,6 +55,8 @@ exports.getOrders = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
+    
+    console.log('Orders retrieved:', orders.length);
     
     const totalPages = Math.ceil(totalDocs / parseInt(limit));
     const hasNext = parseInt(page) < totalPages;
@@ -60,6 +74,7 @@ exports.getOrders = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error in getOrders:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -284,8 +299,10 @@ exports.getOrderTracking = async (req, res) => {
 exports.getCustomerOrders = async (req, res) => {
   try {
     // Get customer ID from the authenticated user
-    const customerId = req.user._id;
+    const customerId = req.user.id || req.user._id;
     const { page = 1, limit = 20, status } = req.query;
+    
+    console.log('Getting orders for customer:', customerId);
     
     let query = { customerId: customerId };
     if (status) {
@@ -297,6 +314,7 @@ exports.getCustomerOrders = async (req, res) => {
     
     // Get total count for pagination
     const totalDocs = await Order.countDocuments(query);
+    console.log('Total orders found:', totalDocs);
     
     // Get orders with pagination
     const orders = await Order.find(query)
@@ -305,6 +323,8 @@ exports.getCustomerOrders = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
+    
+    console.log('Orders retrieved:', orders.length);
     
     const totalPages = Math.ceil(totalDocs / parseInt(limit));
     
@@ -318,6 +338,7 @@ exports.getCustomerOrders = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error in getCustomerOrders:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

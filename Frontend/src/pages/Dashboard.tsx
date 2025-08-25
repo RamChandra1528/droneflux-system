@@ -4,7 +4,6 @@ import { DroneSummary } from "@/components/dashboard/DroneSummary";
 import { DeliverySummary } from "@/components/dashboard/DeliverySummary";
 import { OrderStats } from "@/components/dashboard/OrderStats";
 import { Map } from "@/components/dashboard/Map";
-// import { LiveMap } from "@/components/ui/LiveMap"; // Add this import
 import { droneStats, orderStats, deliveryPerformance, mockDrones } from "@/lib/data";
 import { Package, Plane, Clock, TrendingUp, BarChart, CheckCircle, AlertCircle, ShoppingBag, Truck, Wrench } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -156,6 +155,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <StatusCard

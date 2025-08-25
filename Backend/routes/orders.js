@@ -33,4 +33,7 @@ router.patch('/:id/cancel', authenticateToken, orderController.cancelOrder);
 // Delete order (admin only)
 router.delete('/:id', authenticateToken, requireRole(['admin']), orderController.deleteOrder);
 
+// Get order statistics
+router.get('/stats/overview', authenticateToken, orderController.getOrderStats);
+
 module.exports = router;

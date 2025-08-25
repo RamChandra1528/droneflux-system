@@ -12,7 +12,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Package, MapPin, ChevronDown, BarChart3, Settings, Users, Activity, Plane, ShoppingBag, AlertTriangle } from "lucide-react";
+import { Home, Package, Users, BarChart3, Settings, ShoppingCart, AlertTriangle, Truck, Navigation, ShoppingBag, Plane, MapPin, Activity, ChevronDown } from 'lucide-react';
 
 export function MainNav({ 
   className, 
@@ -30,6 +30,7 @@ export function MainNav({
     { href: "/drones", label: "Drones", icon: Plane },
     { href: "/orders", label: "Orders", icon: Package },
     { href: "/tracking", label: "Tracking", icon: MapPin },
+    { href: "/simulation", label: "Drone Simulation", icon: Navigation },
     { href: "/emergency", label: "Emergency", icon: AlertTriangle },
     { href: "/users", label: "Users", icon: Users },
     { href: "/analytics", label: "Analytics", icon: Activity },
@@ -49,6 +50,7 @@ export function MainNav({
     { href: "/drones", label: "Drones", icon: Plane },
     { href: "/assignments", label: "Assignments", icon: Package },
     { href: "/tracking", label: "Tracking", icon: MapPin },
+    { href: "/simulation", label: "Drone Simulation", icon: Navigation },
     { href: "/emergency", label: "Emergency", icon: AlertTriangle },
     { href: "/settings", label: "Settings", icon: Settings },
   ];

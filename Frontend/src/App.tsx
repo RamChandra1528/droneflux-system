@@ -23,7 +23,8 @@ import Documentation from "./pages/Documentation";
 import Store from "./pages/Store";
 import Checkout from "./pages/Checkout";
 import ProductManagement from "./pages/ProductManagement";
-import EmergencyManagement from "./components/dashboard/EmergencyManagement";
+import EmergencyManagement from './components/dashboard/EmergencyManagement';
+import DroneSimulationMap from './components/dashboard/DroneSimulationMap';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GoogleAuthHandler } from "@/components/auth/GoogleAuthHandler";
 import { SocketProvider } from "@/contexts/SocketContext";
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/assignments" element={<ProtectedRoute roles={["operator"]}><Assignments /></ProtectedRoute>} />
           <Route path="/deliveries" element={<ProtectedRoute roles={["staff"]}><Deliveries /></ProtectedRoute>} />
           <Route path="/emergency" element={<ProtectedRoute><EmergencyManagement /></ProtectedRoute>} />
+          <Route path="/simulation" element={<ProtectedRoute roles={["admin", "operator"]}><DroneSimulationMap /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><HelpCenter /></ProtectedRoute>} />
           <Route path="/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
           

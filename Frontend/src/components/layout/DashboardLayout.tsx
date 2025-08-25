@@ -2,6 +2,7 @@
 import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MainNav } from "./MainNav";
+import { Sidebar } from "./Sidebar";
 import { UserNav } from "./UserNav";
 import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
@@ -22,11 +23,16 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const isMobile = useIsMobile();
   const { user } = useAuth();
   
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const toggleSidebarCollapse = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
   };
 
   return (
@@ -52,8 +58,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             </div>
           </div>
-          
-          {!isMobile && <MainNav userRole={user?.role || "admin"} />}
           
           <div className="flex items-center gap-4">
             <ThemeToggle />
@@ -94,6 +98,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </header>
+
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Sidebar 
+          userRole={user?.role || "admin"} 
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={toggleSidebarCollapse}
+        />
+      )}
       
       {/* Mobile sidebar */}
       {isMobile && (
@@ -130,7 +143,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       )}
       
-      <main className="flex-1">
+      <main className={cn(
+        "flex-1 transition-all duration-300 ease-in-out",
+        !isMobile && (sidebarCollapsed ? "ml-16" : "ml-64")
+      )}>
         <div className="container py-6">
           {children}
         </div>

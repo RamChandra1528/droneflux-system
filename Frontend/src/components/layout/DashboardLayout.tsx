@@ -7,7 +7,8 @@ import { UserNav } from "./UserNav";
 import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu, X, Bell, Plane } from "lucide-react";
+import { Menu, X, Plane } from "lucide-react";
+import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -61,39 +62,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative"
-                >
-                  <Bell className="h-5 w-5" />
-                  <span className="sr-only">Notifications</span>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-destructive" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">New Order Placed</span>
-                    <span className="text-xs text-muted-foreground">2 minutes ago</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">Drone Maintenance Required</span>
-                    <span className="text-xs text-muted-foreground">1 hour ago</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">Delivery Completed</span>
-                    <span className="text-xs text-muted-foreground">3 hours ago</span>
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <NotificationBell />
             <UserNav user={user || undefined} />
           </div>
         </div>

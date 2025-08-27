@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const { authenticateToken, requireRole } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/upload');
 
 // Get all users (admin only)
 router.get('/', authenticateToken, requireRole(['admin']), userController.getUsers);
@@ -29,5 +30,10 @@ router.get('/role/:role', authenticateToken, requireRole(['admin']), userControl
 
 // Get user statistics (admin only)
 router.get('/stats/overview', authenticateToken, requireRole(['admin']), userController.getUserStats);
+
+// Profile picture routes
+router.post('/profile/picture', authenticateToken, upload.single('profilePicture'), userController.uploadProfilePicture);
+router.get('/profile/picture/:id', userController.getProfilePicture);
+router.delete('/profile/picture', authenticateToken, userController.deleteProfilePicture);
 
 module.exports = router;

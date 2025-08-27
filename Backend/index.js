@@ -10,14 +10,16 @@ const socketIo = require('socket.io');
 // Import emergency services
 const EmergencyService = require('./services/emergencyService');
 const LiveTrackingService = require('./services/liveTrackingService');
-const NotificationService = require('./services/notificationService');
+// const NotificationService = require('./services/notificationService'); // Removed
 
 const app = express();
 const server = http.createServer(app);
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:8081",
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CORS_ORIGINS?.split(',') || process.env.FRONTEND_URL
+    : process.env.FRONTEND_URL || "http://localhost:8081",
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -25,7 +27,9 @@ const corsOptions = {
 
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:8081",
+    origin: process.env.NODE_ENV === 'production' 
+      ? process.env.CORS_ORIGINS?.split(',') || process.env.FRONTEND_URL
+      : process.env.FRONTEND_URL || "http://localhost:8081",
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -51,7 +55,17 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/droneflux')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Routes
+// Initialize emergency services
+let liveTrackingService;
+
+// Make io available to routes
+app.set('io', io);
+
+// Initialize services after io is created and attach to app
+liveTrackingService = new LiveTrackingService(io);
+app.set('liveTrackingService', liveTrackingService);
+
+// Routes - MUST be loaded after services are attached to the app
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/products', require('./routes/products'));
@@ -62,6 +76,7 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/assignments', require('./routes/assignments'));
 app.use('/api/emergency', require('./routes/emergency'));
 app.use('/api/simulation', require('./routes/simulation'));
+// app.use('/api/notifications', require('./routes/notificationRoutes')); // Removed notification system
 
 // WebSocket connection handling
 io.on('connection', (socket) => {
@@ -100,20 +115,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Initialize emergency services
-let liveTrackingService;
-let notificationService;
-
-// Make io available to routes
-app.set('io', io);
-
-// Initialize services after io is created
-liveTrackingService = new LiveTrackingService(io);
-notificationService = new NotificationService(io);
-
-// Make services available to routes
-app.set('liveTrackingService', liveTrackingService);
-app.set('notificationService', notificationService);
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -131,11 +132,10 @@ server.listen(PORT, () => {
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully');
   liveTrackingService.cleanup();
-  notificationService.cleanup();
   server.close(() => {
     console.log('Process terminated');
   });
 });
 
-module.exports = { app, io, liveTrackingService, notificationService };
+module.exports = { app, io, liveTrackingService };
 

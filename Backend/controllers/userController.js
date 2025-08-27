@@ -199,3 +199,83 @@ exports.getUserStats = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Upload profile picture
+exports.uploadProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Update user with profile picture data
+    user.profilePicture = {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
+      filename: req.file.originalname,
+      uploadDate: new Date()
+    };
+
+    await user.save();
+
+    res.json({ 
+      success: true, 
+      message: 'Profile picture uploaded successfully',
+      data: {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+        uploadDate: user.profilePicture.uploadDate
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Get profile picture
+exports.getProfilePicture = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Validate ObjectId format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ success: false, error: 'Invalid user ID format' });
+    }
+    
+    const user = await User.findById(id);
+
+    if (!user || !user.profilePicture || !user.profilePicture.data) {
+      return res.status(404).json({ success: false, error: 'Profile picture not found' });
+    }
+
+    res.set('Content-Type', user.profilePicture.contentType);
+    res.set('Content-Disposition', `inline; filename="${user.profilePicture.filename}"`);
+    res.send(user.profilePicture.data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Delete profile picture
+exports.deleteProfilePicture = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    user.profilePicture = undefined;
+    await user.save();
+
+    res.json({ 
+      success: true, 
+      message: 'Profile picture deleted successfully' 
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

@@ -1,0 +1,32 @@
+{
+  "name": "droneflux-system",
+  "version": "1.0.0",
+  "description": "DroneFlux - Comprehensive Drone Delivery Management System",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd Backend && npm run dev",
+    "dev:frontend": "cd Frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd Backend && npm install",
+    "build:frontend": "cd Frontend && npm install && npm run build",
+    "start": "cd Backend && npm start",
+    "deploy:backend": "cd Backend && vercel --prod",
+    "deploy:frontend": "cd Frontend && vercel --prod",
+    "deploy": "npm run deploy:backend && npm run deploy:frontend"
+  },
+  "keywords": [
+    "drone",
+    "delivery",
+    "management",
+    "logistics",
+    "react",
+    "node",
+    "mongodb"
+  ],
+  "author": "DroneFlux Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,6 +1,46 @@
-# 🚁 DroneFlux - Complete E-Commerce Drone Delivery System
+# 🚁 DroneFlux - Production Ready
 
-A comprehensive e-commerce drone delivery management platform with real-time tracking, live drone monitoring, and complete order lifecycle management. DroneFlux enables customers to shop online, track orders in real-time, and monitor drone deliveries with live location updates.
+A comprehensive drone delivery management system built with React, Node.js, and MongoDB. Now production-ready and deployable on Vercel.
+
+## ✨ Features
+
+- 👥 **User Management** - Role-based authentication (Admin, Customer, Operator, Staff)
+- 🔐 **Google OAuth Integration** - Secure social login
+- 📸 **Profile Pictures** - Upload and manage user avatars with database storage
+- 🚁 **Drone Fleet Management** - Complete drone lifecycle management
+- 📦 **Order Tracking** - Real-time order status and delivery tracking
+- 🚨 **Emergency Management** - Priority emergency delivery system
+- 📊 **Live Simulation** - Real-time drone simulation with telemetry
+- 📈 **Analytics Dashboard** - Comprehensive business insights
+- 🔄 **Real-time Updates** - WebSocket-powered live updates
+- 📱 **Responsive Design** - Mobile-first responsive interface
+
+## 🏗️ Tech Stack
+
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **Tailwind CSS** for styling
+- **shadcn/ui** for UI components
+- **React Query** for data fetching
+- **Socket.IO Client** for real-time updates
+- **React Router** for navigation
+- **Recharts** for data visualization
+
+### Backend
+- **Node.js** with Express.js
+- **MongoDB** with Mongoose ODM
+- **JWT** for authentication
+- **Google OAuth 2.0** for social login
+- **Socket.IO** for real-time communication
+- **Multer** for file uploads
+- **bcryptjs** for password hashing
+- **CORS** for cross-origin requests
+
+### Deployment
+- **Vercel** for both frontend and backend
+- **MongoDB Atlas** for production database
+- **Environment-based configuration**
 
 ## 🌟 Key Features
 

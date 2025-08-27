@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/index.js"
+      "dest": "/index.js"
     }
   ],
   "env": {
@@ -23,7 +23,7 @@
     "FRONTEND_URL": "@frontend_url"
   },
   "functions": {
-    "api/index.js": {
+    "index.js": {
       "maxDuration": 30
     }
   }

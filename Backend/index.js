@@ -135,11 +135,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// For Vercel serverless deployment
-if (process.env.VERCEL === '1') {
-  module.exports = app;
-} else {
-  // For local development
+// For Vercel serverless deployment - always export the app
+module.exports = app;
+
+// For local development - only start server if not in serverless environment
+if (process.env.VERCEL !== '1' && require.main === module) {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

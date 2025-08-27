@@ -12,16 +12,6 @@
       "dest": "/index.js"
     }
   ],
-  "env": {
-    "NODE_ENV": "production",
-    "VERCEL": "1",
-    "MONGO_URI": "@mongo_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "SESSION_SECRET": "@session_secret",
-    "GOOGLE_CLIENT_ID": "@google_client_id",
-    "GOOGLE_CLIENT_SECRET": "@google_client_secret",
-    "FRONTEND_URL": "@frontend_url"
-  },
   "functions": {
     "index.js": {
       "maxDuration": 30

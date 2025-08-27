@@ -1,6 +1,7 @@
 
 // Types
 export interface User {
+  _id?: string; // from mongodb
   id: string;
   name: string;
   email: string;

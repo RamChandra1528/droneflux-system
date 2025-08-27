@@ -67,6 +67,8 @@ exports.createAssignment = async (req, res) => {
       .populate('operator', 'name email')
       .populate('drone', 'droneId model status')
       .populate('orders', 'orderId status priority');
+
+    // Notification system removed - assignment created successfully
     
     // Emit real-time update
     const io = req.app.get('io');

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const http = require('http');
@@ -39,16 +40,28 @@ const io = socketIo(server, {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
+// Session middleware - only for non-serverless environments
+if (process.env.VERCEL !== '1') {
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI || 'mongodb://localhost:27017/droneflux',
+      touchAfter: 24 * 3600 // lazy session update
+    }),
+    cookie: { 
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+    }
+  }));
+}
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+// Passport middleware - only for non-serverless environments
+if (process.env.VERCEL !== '1') {
+  app.use(passport.initialize());
+  app.use(passport.session());
+}
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/droneflux')
@@ -122,11 +135,17 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Emergency services initialized');
-});
+// For Vercel serverless deployment
+if (process.env.VERCEL === '1') {
+  module.exports = app;
+} else {
+  // For local development
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log('Emergency services initialized');
+  });
+}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

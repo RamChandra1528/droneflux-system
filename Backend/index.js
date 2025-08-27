@@ -135,6 +135,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
+<<<<<<< Updated upstream
 // For Vercel serverless deployment - always export the app
 module.exports = app;
 
@@ -157,4 +158,8 @@ process.on('SIGTERM', () => {
 });
 
 module.exports = { app, io, liveTrackingService };
+=======
+// Vercel handles server listening, so we export the server instance directly.
+module.exports = server;
+>>>>>>> Stashed changes
 

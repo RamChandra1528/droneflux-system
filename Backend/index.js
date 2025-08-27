@@ -78,6 +78,10 @@ app.set('io', io);
 liveTrackingService = new LiveTrackingService(io);
 app.set('liveTrackingService', liveTrackingService);
 
+app.get('/', (req, res)=>{
+  res.send('API is running...');
+})
+
 // Routes - MUST be loaded after services are attached to the app
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));

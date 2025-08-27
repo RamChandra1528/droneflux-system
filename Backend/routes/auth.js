@@ -13,6 +13,6 @@ router.post('/logout', logout);
 
 // Google OAuth
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), googleCallback);
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login', failureMessage: true }), googleCallback);
 
 module.exports = router;

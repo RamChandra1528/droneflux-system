@@ -1,6 +1,7 @@
 
 // Types
 export interface User {
+  _id?: string; // from mongodb
   id: string;
   name: string;
   email: string;
@@ -24,12 +25,15 @@ export interface Drone {
 }
 
 export interface Order {
-  id: string;
+  id?: string;
+  _id?: string;
+  orderId?: string;
   customerId: string;
   customerName: string;
   status: 'pending' | 'processing' | 'in-transit' | 'delivered' | 'cancelled';
   createdAt: string;
   estimatedDelivery: string;
+  actualDeliveryTime?: string;
   pickupLocation: {
     address: string;
     lat: number;
@@ -55,6 +59,15 @@ export interface Order {
   price: number;
   paymentStatus: 'pending' | 'completed' | 'failed';
   paymentMethod?: string;
+  trackingHistory?: Array<{
+    status: string;
+    timestamp: string;
+    location?: {
+      lat: number;
+      lng: number;
+    };
+    notes?: string;
+  }>;
 }
 
 // Mock data

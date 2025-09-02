@@ -1,31 +1,47 @@
 {
-  "name": "backend",
+  "name": "droneflux-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "DroneFlux Backend API - Drone Delivery Management System",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "seed": "node scripts/seedDatabase.js",
+    "vercel-build": "npm install"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "drone",
+    "delivery",
+    "logistics",
+    "api"
+  ],
+  "author": "DroneFlux Team",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
+    "axios": "^1.6.0",
     "bcryptjs": "^3.0.2",
+    "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
+    "cron": "^3.1.6",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.3",
     "nodemailer": "^7.0.5",
+    "mqtt": "^5.14.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.8",
     "nodemon": "^3.1.10",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
+    "socket.io": "^4.7.4",
+    "stripe": "^14.17.0",
+    "uuid": "^11.1.0"
   }
 }

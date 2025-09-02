@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import DroneManagement from "./pages/DroneManagement";
 import OrderManagement from "./pages/OrderManagement";
 import Tracking from "./pages/Tracking";
+import LiveTracking from "./pages/LiveTracking";
 import UserManagement from "./pages/UserManagement";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
@@ -19,12 +20,18 @@ import Assignments from "./pages/Assignments";
 import Deliveries from "./pages/Deliveries";
 import HelpCenter from "./pages/HelpCenter";
 import Documentation from "./pages/Documentation";
+import Store from "./pages/Store";
+import Checkout from "./pages/Checkout";
+import ProductManagement from "./pages/ProductManagement";
+import EmergencyManagement from './components/dashboard/EmergencyManagement';
+import DroneSimulationMap from './components/dashboard/DroneSimulationMap';
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GoogleAuthHandler } from "@/components/auth/GoogleAuthHandler";
 import DeviceTracking from "./pages/DeviceTracking";
 import SimpleDeviceTracking from "./pages/SimpleDeviceTracking";
 import DeviceManagement from "./pages/DeviceManagement";
 import LiveDeviceMap from "./pages/LiveDeviceMap";
+import { SocketProvider } from "@/contexts/SocketContext";
 
 // Create the QueryClient
 const queryClient = new QueryClient();
@@ -32,9 +39,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+      <SocketProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
@@ -43,11 +51,15 @@ const App = () => (
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
+          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          <Route path="/products" element={<ProtectedRoute roles={["admin"]}><ProductManagement /></ProtectedRoute>} />
           <Route path="/drones" element={<ProtectedRoute roles={["admin", "operator","staff"]}><DroneManagement /></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><OrderManagement /></ProtectedRoute>} />
           <Route path="/tracking" element={<ProtectedRoute><Tracking /></ProtectedRoute>} />
           <Route path="/device-tracking" element={<DeviceTracking />} />
           <Route path="/simple-device-tracking" element={<ProtectedRoute><SimpleDeviceTracking /></ProtectedRoute>} />
+          <Route path="/live-tracking" element={<ProtectedRoute roles={["admin", "operator"]}><LiveTracking /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute roles={["admin"]}><UserManagement /></ProtectedRoute>} />
           <Route path="/admin/devices" element={<ProtectedRoute roles={["admin"]}><DeviceManagement /></ProtectedRoute>} />
           <Route path="/admin/live-map" element={<ProtectedRoute roles={["admin"]}><LiveDeviceMap /></ProtectedRoute>} />
@@ -56,13 +68,16 @@ const App = () => (
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/assignments" element={<ProtectedRoute roles={["operator"]}><Assignments /></ProtectedRoute>} />
           <Route path="/deliveries" element={<ProtectedRoute roles={["staff"]}><Deliveries /></ProtectedRoute>} />
+          <Route path="/emergency" element={<ProtectedRoute><EmergencyManagement /></ProtectedRoute>} />
+          <Route path="/simulation" element={<ProtectedRoute roles={["admin", "operator"]}><DroneSimulationMap /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><HelpCenter /></ProtectedRoute>} />
           <Route path="/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </SocketProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

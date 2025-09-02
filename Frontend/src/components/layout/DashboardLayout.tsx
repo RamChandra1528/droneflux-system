@@ -2,11 +2,13 @@
 import { ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MainNav } from "./MainNav";
+import { Sidebar } from "./Sidebar";
 import { UserNav } from "./UserNav";
 import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu, X, Bell, Plane } from "lucide-react";
+import { Menu, X, Plane } from "lucide-react";
+import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -22,11 +24,16 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const isMobile = useIsMobile();
   const { user } = useAuth();
   
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const toggleSidebarCollapse = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
   };
 
   return (
@@ -53,47 +60,22 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </div>
           
-          {!isMobile && <MainNav userRole={user?.role || "admin"} />}
-          
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative"
-                >
-                  <Bell className="h-5 w-5" />
-                  <span className="sr-only">Notifications</span>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-destructive" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">New Order Placed</span>
-                    <span className="text-xs text-muted-foreground">2 minutes ago</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">Drone Maintenance Required</span>
-                    <span className="text-xs text-muted-foreground">1 hour ago</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">Delivery Completed</span>
-                    <span className="text-xs text-muted-foreground">3 hours ago</span>
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <NotificationBell />
             <UserNav user={user || undefined} />
           </div>
         </div>
       </header>
+
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Sidebar 
+          userRole={user?.role || "admin"} 
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={toggleSidebarCollapse}
+        />
+      )}
       
       {/* Mobile sidebar */}
       {isMobile && (
@@ -130,7 +112,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       )}
       
-      <main className="flex-1">
+      <main className={cn(
+        "flex-1 transition-all duration-300 ease-in-out",
+        !isMobile && (sidebarCollapsed ? "ml-16" : "ml-64")
+      )}>
         <div className="container py-6">
           {children}
         </div>

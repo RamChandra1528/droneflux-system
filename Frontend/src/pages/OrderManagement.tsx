@@ -14,6 +14,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { orderService } from "@/services/orderService";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -60,11 +61,50 @@ export default function OrderManagement() {
   const userOrders = user?.role === "customer" 
     ? orders.filter(order => order.customerId === user.id)
     : orders;
+  const { user, isLoading } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Fetch orders from API
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!user || isLoading || !localStorage.getItem('droneflux-token')) return;
+      
+      try {
+        setLoading(true);
+        let response;
+        
+        if (user.role === 'customer') {
+          // For customers, get their specific orders
+          response = await orderService.getCustomerOrders();
+        } else {
+          // For other roles, get all orders
+          response = await orderService.getOrders();
+        }
+        
+        setOrders(response.data || []);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+        setError('Failed to load orders. Please try again later.');
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [user, isLoading]);
   
   // Filter orders based on search and status
-  const filteredOrders = userOrders.filter(order => {
-    const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredOrders = orders.filter(order => {
+    const orderId = order._id || order.id || order.orderId || '';
+    const customerName = order.customerName || '';
+    const matchesSearch = orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         customerName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus ? order.status === filterStatus : true;
     return matchesSearch && matchesStatus;
   });
@@ -72,9 +112,12 @@ export default function OrderManagement() {
   // Define columns for the data table
   const columns: ColumnDef<Order>[] = [
     {
-      accessorKey: "id",
+      accessorKey: "orderId",
       header: "Order ID",
-      cell: ({ row }) => <div className="font-medium">#{row.getValue("id")}</div>,
+      cell: ({ row }) => {
+        const orderId = row.original.orderId || row.original._id || row.original.id;
+        return <div className="font-medium">#{orderId}</div>;
+      },
     },
     {
       accessorKey: "customerName",
@@ -150,6 +193,17 @@ export default function OrderManagement() {
     },
   ];
 
+  // Show loading spinner while authentication is being determined
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
@@ -218,15 +272,31 @@ export default function OrderManagement() {
           <TabsContent value="grid" className="pt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredOrders.map(order => (
-                <DeliverySummary key={order.id} order={order} />
+                <DeliverySummary key={order._id || order.id} order={order} />
               ))}
               {filteredOrders.length === 0 && (
-                <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
-                  <div className="flex flex-col items-center text-muted-foreground">
-                    <Package className="h-8 w-8 mb-2" />
-                    <p>No orders found</p>
+                loading ? (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
+                      <p>Loading orders...</p>
+                    </div>
                   </div>
-                </div>
+                ) : error ? (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <AlertTriangle className="h-8 w-8 mb-2 text-red-500" />
+                      <p className="text-red-600">{error}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="col-span-full flex items-center justify-center h-40 bg-muted/20 rounded-lg border-2 border-dashed">
+                    <div className="flex flex-col items-center text-muted-foreground">
+                      <Package className="h-8 w-8 mb-2" />
+                      <p>No orders found</p>
+                    </div>
+                  </div>
+                )
               )}
             </div>
           </TabsContent>

@@ -12,7 +12,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { Package, MapPin, ChevronDown, BarChart3, Settings, Users, Activity, Plane } from "lucide-react";
+import { Home, Package, Users, BarChart3, Settings, ShoppingCart, AlertTriangle, Truck, Navigation, ShoppingBag, Plane, MapPin, Activity, ChevronDown } from 'lucide-react';
 
 export function MainNav({ 
   className, 
@@ -26,9 +26,12 @@ export function MainNav({
   
   const adminLinks = [
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/products", label: "Products", icon: ShoppingBag },
     { href: "/drones", label: "Drones", icon: Plane },
     { href: "/orders", label: "Orders", icon: Package },
     { href: "/tracking", label: "Tracking", icon: MapPin },
+    { href: "/simulation", label: "Drone Simulation", icon: Navigation },
+    { href: "/emergency", label: "Emergency", icon: AlertTriangle },
     { href: "/users", label: "Users", icon: Users },
     { href: "/analytics", label: "Analytics", icon: Activity },
     { href: "/settings", label: "Settings", icon: Settings },
@@ -38,6 +41,7 @@ export function MainNav({
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
     { href: "/orders", label: "My Orders", icon: Package },
     { href: "/tracking", label: "Track Order", icon: MapPin },
+    { href: "/emergency", label: "Emergency Orders", icon: AlertTriangle },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
   
@@ -46,6 +50,8 @@ export function MainNav({
     { href: "/drones", label: "Drones", icon: Plane },
     { href: "/assignments", label: "Assignments", icon: Package },
     { href: "/tracking", label: "Tracking", icon: MapPin },
+    { href: "/simulation", label: "Drone Simulation", icon: Navigation },
+    { href: "/emergency", label: "Emergency", icon: AlertTriangle },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
   

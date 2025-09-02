@@ -19,48 +19,53 @@ import { orderService } from "@/services/orderService";
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function OrderManagement() {
-  const { user } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const { user, isLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
-
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Fetch orders from API
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!user || isLoading || !localStorage.getItem('droneflux-token')) return;
+      
       try {
-        const response = await fetch(`${API_URL}/api/orders`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('droneflux-token')}`,
-          },
-        });
-        const data = await response.json();
-        const formattedOrders = data.map((order: any) => ({
-          id: order._id,
-          customerId: order.user._id, // Assuming customerName is the customerId
-          customerName: order.user.name,
-          status: order.orderStatus,
-          createdAt: order.createdAt,
-          estimatedDelivery: new Date(new Date(order.createdAt).getTime() + 2 * 60 * 60 * 1000).toISOString(), // Placeholder
-          pickupLocation: { address: 'N/A', lat: 0, lng: 0 }, // Placeholder
-          deliveryLocation: { address: order.customerAddress, lat: 0, lng: 0 }, // Placeholder
-          items: [{ name: order.productName, quantity: 1, weight: 0 }], // Placeholder
-          totalWeight: 0, // Placeholder
-          droneId: order.assignedDrone,
-          price: 0, // Placeholder
-          paymentStatus: 'completed', // Placeholder
-        }));
-        setOrders(formattedOrders);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
+        setLoading(true);
+        let response;
+        
+        if (user.role === 'customer') {
+          // For customers, get their specific orders
+          response = await orderService.getCustomerOrders();
+        } else {
+          // For other roles, get all orders
+          response = await orderService.getOrders();
+        }
+        
+        setOrders(response.data || []);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+        setError('Failed to load orders. Please try again later.');
+        setOrders([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOrders();
-  }, []);
+  }, [user, isLoading]);
   
-  // Filter orders for current user if customer
-  const userOrders = user?.role === "customer" 
-    ? orders.filter(order => order.customerId === user.id)
-    : orders;
+  // Filter orders based on search and status
+  const filteredOrders = orders.filter(order => {
+    const orderId = order._id || order.id || order.orderId || '';
+    const customerName = order.customerName || '';
+    const matchesSearch = orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         customerName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus ? order.status === filterStatus : true;
+    return matchesSearch && matchesStatus;
+  });
   const { user, isLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string | null>(null);

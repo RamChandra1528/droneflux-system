@@ -45,7 +45,7 @@ export function SignupForm() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [userType, setUserType] = useState("customer");
+  const [userType, setUserType] = useState("admin");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -227,8 +227,8 @@ export function SignupForm() {
                     disabled={isLoading}
                     className="w-full p-2 border rounded-md"
                   >
-                    <option value="customer">Customer</option>
                     <option value="admin">Admin</option>
+                    <option value="customer">Customer</option>
                     
                   </select>
                 </FormControl>

@@ -1,6 +1,7 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/dashboard/DataTable";
@@ -19,6 +20,7 @@ export default function DroneManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [selectedDrone, setSelectedDrone] = useState<Drone | null>(null);
+  const navigate = useNavigate();
 
   // Filter drones based on search term and status filter
   const filteredDrones = mockDrones.filter(drone => {
@@ -128,7 +130,7 @@ export default function DroneManagement() {
               Manage your drone fleet, monitor status, and assign deliveries
             </p>
           </div>
-          <Button>
+          <Button onClick={() => navigate('/admin/devices')}>
             <Plus className="mr-2 h-4 w-4" />
             Add New Drone
           </Button>

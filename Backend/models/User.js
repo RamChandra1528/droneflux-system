@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   googleId: String,
   name: String,
   email: { type: String, unique: true },
-  password: String,
+  password: { type: String, required: false },
   role: { type: String, enum: ["admin", "customer", "operator", "staff"], default: "customer" },
   profilePicture: {
     data: Buffer,

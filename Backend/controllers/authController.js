@@ -5,9 +5,13 @@ exports.register = async (req, res) => {
   try {
     const { email, password, name, userType } = req.body; // Accept userType
     const user = await User.create({ email, password, name, role: userType || "customer" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     const { password: pw, ...userData } = user.toObject();
-    res.status(201).json({ message: 'User registered', user: userData });
+    res.status(201).json({ message: 'User registered', user: userData, token });
   } catch (err) {
+    if (err.code === 11000) { // Duplicate key error
+      return res.status(400).json({ error: "Email already registered" });
+    }
     res.status(400).json({ error: "Registration failed" });
   }
 };

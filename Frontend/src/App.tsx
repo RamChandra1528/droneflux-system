@@ -21,6 +21,10 @@ import HelpCenter from "./pages/HelpCenter";
 import Documentation from "./pages/Documentation";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GoogleAuthHandler } from "@/components/auth/GoogleAuthHandler";
+import DeviceTracking from "./pages/DeviceTracking";
+import SimpleDeviceTracking from "./pages/SimpleDeviceTracking";
+import DeviceManagement from "./pages/DeviceManagement";
+import LiveDeviceMap from "./pages/LiveDeviceMap";
 
 // Create the QueryClient
 const queryClient = new QueryClient();
@@ -42,7 +46,11 @@ const App = () => (
           <Route path="/drones" element={<ProtectedRoute roles={["admin", "operator","staff"]}><DroneManagement /></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><OrderManagement /></ProtectedRoute>} />
           <Route path="/tracking" element={<ProtectedRoute><Tracking /></ProtectedRoute>} />
+          <Route path="/device-tracking" element={<DeviceTracking />} />
+          <Route path="/simple-device-tracking" element={<ProtectedRoute><SimpleDeviceTracking /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute roles={["admin"]}><UserManagement /></ProtectedRoute>} />
+          <Route path="/admin/devices" element={<ProtectedRoute roles={["admin"]}><DeviceManagement /></ProtectedRoute>} />
+          <Route path="/admin/live-map" element={<ProtectedRoute roles={["admin"]}><LiveDeviceMap /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute roles={["admin"]}><Analytics /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

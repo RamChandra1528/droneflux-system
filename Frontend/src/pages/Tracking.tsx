@@ -1,26 +1,42 @@
-
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Map } from "@/components/dashboard/Map";
+import { LiveMap } from "@/components/ui/LiveMap";
 import { mockOrders, Order } from "@/lib/data";
 import { Search, MapPin, Package, Clock, CheckCircle, Truck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
+import { io, Socket } from "socket.io-client";
+import type { LatLngExpression } from "leaflet";
 
 export default function Tracking() {
   const { user } = useAuth();
   const [trackingId, setTrackingId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  
-  // If customer, show only their orders
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [droneLocation, setDroneLocation] = useState<LatLngExpression | null>(null);
+
+  useEffect(() => {
+    const newSocket = io(import.meta.env.VITE_BACKEND_URL || "http://localhost:5000");
+    setSocket(newSocket);
+
+    newSocket.on("locationUpdate", (data) => {
+      if (selectedOrder && data.droneId === selectedOrder.droneId) {
+        setDroneLocation([data.location.latitude, data.location.longitude]);
+      }
+    });
+
+    return () => {
+      newSocket.close();
+    };
+  }, [selectedOrder]);
+
   const availableOrders = user?.role === "customer" 
     ? mockOrders.filter(order => order.customerId === user.id)
     : mockOrders;
   
-  // Handle tracking search
   const handleTrackOrder = () => {
     if (!trackingId.trim()) return;
     
@@ -29,9 +45,11 @@ export default function Tracking() {
     );
     
     setSelectedOrder(foundOrder || null);
+    if (foundOrder) {
+      setDroneLocation(foundOrder.deliveryLocation.coordinates as LatLngExpression);
+    }
   };
 
-  // Status timeline based on order status
   const getStatusTimeline = (order: Order) => {
     const statuses = [
       { label: "Order Placed", icon: Package, completed: true, time: new Date(order.createdAt) },
@@ -58,7 +76,6 @@ export default function Tracking() {
     return statuses;
   };
 
-  // Format time for display
   const formatTime = (date: Date | null) => {
     if (!date) return "";
     return date.toLocaleString('en-US', { 
@@ -250,7 +267,15 @@ export default function Tracking() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                <Map className="h-[400px] rounded-b-lg" />
+                <div className="h-[400px] rounded-b-lg">
+                  {droneLocation ? (
+                    <LiveMap center={droneLocation} />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-muted">
+                      <p className="text-muted-foreground">Waiting for location data...</p>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -274,6 +299,7 @@ export default function Tracking() {
                         onClick={() => {
                           setTrackingId(order.id);
                           setSelectedOrder(order);
+                          setDroneLocation(order.deliveryLocation.coordinates as LatLngExpression);
                         }}
                       >
                         Order #{order.id}

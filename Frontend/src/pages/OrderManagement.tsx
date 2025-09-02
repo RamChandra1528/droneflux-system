@@ -1,11 +1,10 @@
-
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
-import { mockOrders, Order } from "@/lib/data";
+import { Order } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { DeliverySummary } from "@/components/dashboard/DeliverySummary";
 import { 
@@ -16,15 +15,51 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function OrderManagement() {
   const { user } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/orders`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('droneflux-token')}`,
+          },
+        });
+        const data = await response.json();
+        const formattedOrders = data.map((order: any) => ({
+          id: order._id,
+          customerId: order.user._id, // Assuming customerName is the customerId
+          customerName: order.user.name,
+          status: order.orderStatus,
+          createdAt: order.createdAt,
+          estimatedDelivery: new Date(new Date(order.createdAt).getTime() + 2 * 60 * 60 * 1000).toISOString(), // Placeholder
+          pickupLocation: { address: 'N/A', lat: 0, lng: 0 }, // Placeholder
+          deliveryLocation: { address: order.customerAddress, lat: 0, lng: 0 }, // Placeholder
+          items: [{ name: order.productName, quantity: 1, weight: 0 }], // Placeholder
+          totalWeight: 0, // Placeholder
+          droneId: order.assignedDrone,
+          price: 0, // Placeholder
+          paymentStatus: 'completed', // Placeholder
+        }));
+        setOrders(formattedOrders);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
   
   // Filter orders for current user if customer
   const userOrders = user?.role === "customer" 
-    ? mockOrders.filter(order => order.customerId === user.id)
-    : mockOrders;
+    ? orders.filter(order => order.customerId === user.id)
+    : orders;
   
   // Filter orders based on search and status
   const filteredOrders = userOrders.filter(order => {

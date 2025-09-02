@@ -6,11 +6,9 @@ const onlineUsers = new Map();
 const socketHandlers = (io) => {
   io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
-
-    socket.on('join', (userId) => {
-      onlineUsers.set(userId, socket.id);
-      console.log(`User ${userId} joined with socket ID ${socket.id}`);
-    });
+    const userId = socket.user._id;
+    onlineUsers.set(userId.toString(), socket.id);
+    console.log(`User ${userId} authenticated and connected with socket ID ${socket.id}`);
 
     socket.on('updateLocation', async (data) => {
       const { droneId, location, battery } = data;

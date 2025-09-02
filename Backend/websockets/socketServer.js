@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const socketHandlers = require("./socketHandlers");
+const socketAuthMiddleware = require("../middlewares/socketAuthMiddleware");
 
 const initSocketServer = (server) => {
   const io = new Server(server, {
@@ -8,6 +9,8 @@ const initSocketServer = (server) => {
       methods: ["GET", "POST"],
     },
   });
+
+  io.use(socketAuthMiddleware);
 
   socketHandlers(io);
 

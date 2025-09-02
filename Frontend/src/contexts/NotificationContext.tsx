@@ -30,79 +30,79 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   const fetchNotifications = useCallback(async () => {
-    if (!user) return;
-    try {
-      const token = localStorage.getItem('droneflux-token');
-      const response = await fetch(`${API_URL}/api/notifications`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setNotifications(data.data);
-        setUnreadCount(data.data.filter((n: Notification) => !n.read).length);
-      }
-    } catch (error) {
-      console.error('Failed to fetch notifications', error);
-    }
+    // if (!user) return;
+    // try {
+    //   const token = localStorage.getItem('droneflux-token');
+    //   const response = await fetch(`${API_URL}/api/notifications`, {
+    //     headers: { 'Authorization': `Bearer ${token}` },
+    //   });
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     setNotifications(data.data);
+    //     setUnreadCount(data.data.filter((n: Notification) => !n.read).length);
+    //   }
+    // } catch (error) {
+    //   console.error('Failed to fetch notifications', error);
+    // }
   }, [user, API_URL]);
 
   useEffect(() => {
-    fetchNotifications();
+    // fetchNotifications();
   }, [fetchNotifications]);
 
   useEffect(() => {
-    if (!user) return;
+    // if (!user) return;
 
-    const socket: Socket = io(API_URL, { 
-        query: { userId: user.id },
-        withCredentials: true 
-    });
+    // const socket: Socket = io(API_URL, { 
+    //     query: { userId: user.id },
+    //     withCredentials: true 
+    // });
 
-    socket.on('connect', () => {
-        console.log('Socket connected for notifications');
-        socket.emit('join-user-room', user.id);
-    });
+    // socket.on('connect', () => {
+    //     console.log('Socket connected for notifications');
+    //     socket.emit('join-user-room', user.id);
+    // });
 
-    socket.on('new_notification', (notification: Notification) => {
-      setNotifications(prev => [notification, ...prev]);
-      setUnreadCount(prev => prev + 1);
-      toast({
-        title: 'New Notification',
-        description: notification.message,
-      });
-    });
+    // socket.on('new_notification', (notification: Notification) => {
+    //   setNotifications(prev => [notification, ...prev]);
+    //   setUnreadCount(prev => prev + 1);
+    //   toast({
+    //     title: 'New Notification',
+    //     description: notification.message,
+    //   });
+    // });
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, [user, API_URL, toast]);
 
   const markAsRead = async (id: string) => {
-    try {
-      const token = localStorage.getItem('droneflux-token');
-      await fetch(`${API_URL}/api/notifications/${id}/read`, { 
-          method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}` },
-      });
-      setNotifications(notifications.map(n => n._id === id ? { ...n, read: true } : n));
-      setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error('Failed to mark notification as read', error);
-    }
+    // try {
+    //   const token = localStorage.getItem('droneflux-token');
+    //   await fetch(`${API_URL}/api/notifications/${id}/read`, { 
+    //       method: 'PUT',
+    //       headers: { 'Authorization': `Bearer ${token}` },
+    //   });
+    //   setNotifications(notifications.map(n => n._id === id ? { ...n, read: true } : n));
+    //   setUnreadCount(prev => Math.max(0, prev - 1));
+    // } catch (error) {
+    //   console.error('Failed to mark notification as read', error);
+    // }
   };
 
   const markAllAsRead = async () => {
-    try {
-        const token = localStorage.getItem('droneflux-token');
-        await fetch(`${API_URL}/api/notifications/readall`, { 
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}` },
-        });
-        setNotifications(notifications.map(n => ({ ...n, read: true })));
-        setUnreadCount(0);
-    } catch (error) {
-        console.error('Failed to mark all notifications as read', error);
-    }
+    // try {
+    //     const token = localStorage.getItem('droneflux-token');
+    //     await fetch(`${API_URL}/api/notifications/readall`, { 
+    //         method: 'PUT',
+    //         headers: { 'Authorization': `Bearer ${token}` },
+    //     });
+    //     setNotifications(notifications.map(n => ({ ...n, read: true })));
+    //     setUnreadCount(0);
+    // } catch (error) {
+    //     console.error('Failed to mark all notifications as read', error);
+    // }
   };
 
   return (

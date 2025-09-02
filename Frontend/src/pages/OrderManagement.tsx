@@ -9,78 +9,85 @@ import { Badge } from "@/components/ui/badge";
 import { DeliverySummary } from "@/components/dashboard/DeliverySummary";
 import { 
   CalendarClock, Package, CheckCircle, Clock, AlertTriangle, 
-  LocateFixed, Plus, Search, Filter, CalendarDays
+  LocateFixed, Plus, Search
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } => {
-        const status = row.getValue("status") as string;
-        const statusConfig = {
-          pending: { color: "bg-orange-500/15 text-orange-600 border-orange-200", icon: Clock },
-          processing: { color: "bg-blue-500/15 text-blue-600 border-blue-200", icon: Package },
-          "in-transit": { color: "bg-indigo-500/15 text-indigo-600 border-indigo-200", icon: LocateFixed },
-          delivered: { color: "bg-green-500/15 text-green-600 border-green-200", icon: CheckCircle },
-          cancelled: { color: "bg-red-500/15 text-red-600 border-red-200", icon: AlertTriangle },
-        };
-        
-        const config = statusConfig[status as keyof typeof statusConfig];
-        const StatusIcon = config?.icon || Clock;
-        
-        return (
-          <Badge variant="outline" className={config?.color}>
-            <StatusIcon className="h-3 w-3 mr-1" />
-            <span className="capitalize">{status}</span>
-          </Badge>
-        );
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Created At",
-      cell: ({ row }) => {
-        const date = new Date(row.getValue("createdAt") as string);
-        return date.toLocaleString('en-US', { 
-          month: 'short', 
-          day: 'numeric', 
-          hour: 'numeric', 
-          minute: 'numeric',
-          hour12: true
-        });
-      },
-    },
-    {
-      accessorKey: "totalWeight",
-      header: "Weight",
-      cell: ({ row }) => `${row.getValue("totalWeight")} kg`,
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-      cell: ({ row }) => `$${(row.getValue("price") as number).toFixed(2)}`,
-    },
-    {
-      accessorKey: "paymentStatus",
-      header: "Payment",
-      cell: ({ row }) => {
-        const status = row.getValue("paymentStatus") as string;
-        return (
-          <span className={`capitalize ${status === "completed" ? "text-green-600" : status === "pending" ? "text-orange-600" : "text-red-600"}`}>
-            {status}
-          </span>
-        );
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <Button variant="ghost" size="sm">
-          View Details
-        </Button>
-      ),
-    },
-  ];
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-  // Show loading spinner while authentication is being determined
+// ✅ Define columns properly
+const columns: ColumnDef<Order>[] = [
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string;
+      const statusConfig = {
+        pending: { color: "bg-orange-500/15 text-orange-600 border-orange-200", icon: Clock },
+        processing: { color: "bg-blue-500/15 text-blue-600 border-blue-200", icon: Package },
+        "in-transit": { color: "bg-indigo-500/15 text-indigo-600 border-indigo-200", icon: LocateFixed },
+        delivered: { color: "bg-green-500/15 text-green-600 border-green-200", icon: CheckCircle },
+        cancelled: { color: "bg-red-500/15 text-red-600 border-red-200", icon: AlertTriangle },
+      };
+      const config = statusConfig[status as keyof typeof statusConfig];
+      const StatusIcon = config?.icon || Clock;
+
+      return (
+        <Badge variant="outline" className={config?.color}>
+          <StatusIcon className="h-3 w-3 mr-1" />
+          <span className="capitalize">{status}</span>
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("createdAt") as string);
+      return date.toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+    },
+  },
+  { accessorKey: "totalWeight", header: "Weight", cell: ({ row }) => `${row.getValue("totalWeight")} kg` },
+  { accessorKey: "price", header: "Price", cell: ({ row }) => `$${(row.getValue("price") as number).toFixed(2)}` },
+  {
+    accessorKey: "paymentStatus",
+    header: "Payment",
+    cell: ({ row }) => {
+      const status = row.getValue("paymentStatus") as string;
+      return (
+        <span className={`capitalize ${status === "completed" ? "text-green-600" : status === "pending" ? "text-orange-600" : "text-red-600"}`}>
+          {status}
+        </span>
+      );
+    },
+  },
+  { id: "actions", cell: () => <Button variant="ghost" size="sm">View Details</Button> },
+];
+
+export default function OrderManagement() {
+  const { user, isLoading } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Simulated fetch (replace with real API call)
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setFilteredOrders([]); // TODO: Replace with fetched data
+      setLoading(false);
+    }, 1000);
+  }, []);
+
   if (isLoading) {
     return (
       <DashboardLayout>

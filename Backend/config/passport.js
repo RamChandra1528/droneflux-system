@@ -20,12 +20,8 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.BACKEND_URL + '/api/auth/google/callback',
+  callbackURL: 'https://droneflux-system-dbd9.vercel.app/api/auth/google/callback',
 }, async (accessToken, refreshToken, profile, done) => {
-  console.log('GoogleStrategy callback reached');
-  console.log('accessToken:', accessToken);
-  console.log('refreshToken:', refreshToken);
-  console.log('profile:', profile);
   try {
     // Check if user exists with Google ID
     let user = await User.findOne({ googleId: profile.id });
@@ -54,7 +50,6 @@ passport.use(new GoogleStrategy({
     return done(null, user);
 
   } catch (err) {
-    console.error('Error in GoogleStrategy callback:', err);
     return done(err);
   }
 }));

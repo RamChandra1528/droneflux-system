@@ -51,9 +51,7 @@ exports.googleCallback = (req, res) => {
     name: req.user.name,
     role: req.user.role || "admin" // add role if you use it
   }));
-  const redirectUrl = `${process.env.FRONTEND_URL}/auth/success?token=${token}&user=${user}`;
-  console.log('Redirecting to:', redirectUrl);
   // Redirect to frontend route with token and user info
-  res.redirect(redirectUrl);
+  res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}/auth/success?token=${token}&user=${user}`);
 };
 

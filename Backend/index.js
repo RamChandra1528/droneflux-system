@@ -78,10 +78,6 @@ app.set('io', io);
 liveTrackingService = new LiveTrackingService(io);
 app.set('liveTrackingService', liveTrackingService);
 
-app.get('/', (req, res)=>{
-  res.send('API is running...');
-})
-
 // Routes - MUST be loaded after services are attached to the app
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
@@ -139,31 +135,26 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Graceful shutdown logic for local development
-const gracefulShutdown = () => {
-  console.log('Shutting down gracefully');
-  if (liveTrackingService) {
-    liveTrackingService.cleanup();
-  }
-  server.close(() => {
-    console.log('Process terminated');
-    process.exit(0);
-  });
-};
+// For Vercel serverless deployment - always export the app
+module.exports = app;
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
-
-// For local development, start the server.
-// On Vercel, the server object is exported and Vercel handles the listening.
-if (process.env.VERCEL !== '1') {
+// For local development - only start server if not in serverless environment
+if (process.env.VERCEL !== '1' && require.main === module) {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log('Emergency services initialized');
   });
 }
 
-// Export the server instance for Vercel.
-module.exports = server;
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  liveTrackingService.cleanup();
+  server.close(() => {
+    console.log('Process terminated');
+  });
+});
 
+module.exports = { app, io, liveTrackingService };
 

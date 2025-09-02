@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string, userType: string) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, userType }), // send userType
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (name: string, email: string, password: string, userType: string) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, userType }), // send userType
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch(`${API_URL}/auth/logout`, { method: "POST", credentials: "include" });
+      await fetch(`${API_URL}/api/auth/logout`, { method: "POST", credentials: "include" });
     } catch (error) {
       // Ignore error, just clear local state
     }
@@ -129,7 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const googleLogin = () => {
-    window.location.href = `${API_URL}/auth/google`;
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   return (

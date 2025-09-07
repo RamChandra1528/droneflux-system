@@ -106,6 +106,14 @@ export default function Auth() {
                     <Button type="submit" disabled={isSubmitting || isLoading}>
                       {isSubmitting || isLoading ? "Signing in..." : "Sign in"}
                     </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={googleLogin}
+                      disabled={isSubmitting || isLoading}
+                    >
+                      Sign in with Google
+                    </Button>
                   </div>
                 </form>
               </CardContent>
